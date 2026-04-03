@@ -461,20 +461,50 @@ GROUP_FIELDS: Dict[str, List[str]] = {
 GROUP_INSTRUCTIONS: Dict[str, str] = {
     "medical_history": (
         "IMPORTANT: sz_age is the patient's AGE AT FIRST SEIZURE ONSET, "
-        "NOT their current age. Look for phrases like 'seizures began at age X' "
-        "or 'first seizure at age X'. Do not use the patient's current age."
+        "NOT their current age. Look for phrases like 'seizures began at age X', "
+        "'first seizure at age X', 'epilepsy onset at age X', 'since age X', "
+        "'onset at X years old', 'initial seizure at X'. Do not use the patient's current age.\n"
+        "IMPORTANT for medhx_neurohx: Only check a neurological comorbidity if it is explicitly "
+        "listed as a separate current neurological diagnosis. Do NOT check 'ischemic stroke' (code 1) "
+        "simply because the patient has post-stroke epilepsy — the stroke is the seizure etiology, "
+        "not a separate current comorbidity. Do NOT check 'headaches/migraine' (code 5) unless "
+        "migraine is explicitly listed as a separate diagnosis. If no neurological comorbidities "
+        "are listed beyond epilepsy itself, select code 0 (None).\n"
+        "IMPORTANT for medhx_etio: "
+        "Code 0 = Generalized epilepsy (e.g., JME, absence epilepsy, generalized tonic-clonic). "
+        "Code 1 = Focal epilepsy (e.g., temporal lobe epilepsy, frontal lobe epilepsy, MTS, post-stroke focal). "
+        "Code 2 = Both focal AND generalized features present. "
+        "Code 3 = PNEE/FND only (psychogenic non-epileptic events, functional neurological disorder — no epilepsy). "
+        "Code 4 = Physiological non-epileptic events (syncope, parasomnias). "
+        "Code 5 = Mixed FND + epilepsy (patient has both PNEE and confirmed epileptic seizures). "
+        "Autoimmune epilepsy is focal (code 1). Dravet syndrome is generalized (code 0)."
     ),
     "seizure": (
         "IMPORTANT: emu_sz_type refers to the MOST FREQUENT seizure type at the time of "
         "EMU admission. If multiple types are described, choose the one reported as most frequent. "
         "Do not default to code 1 (primary generalized tonic-clonic) unless the note explicitly "
-        "states the seizures are generalized."
+        "states the seizures are generalized.\n"
+        "IMPORTANT for emu_sz_type1_freq — use these exact mappings: "
+        "1=multiple per day (several times daily, 2-3x/day), "
+        "2=daily (once a day, every day), "
+        "3=multiple per week (2-3x/week, several times weekly), "
+        "4=weekly (once a week, every week), "
+        "5=multiple per month (2-3x/month, several times monthly), "
+        "6=monthly (once a month, every month), "
+        "7=multiple per year (every few months, 3-4x/year), "
+        "8=yearly or less frequent (once a year, rare). "
+        "If the patient has FND/PNEE only with no epileptic seizures, return null for this field."
     ),
     "asms": (
         "IMPORTANT: Count only regularly SCHEDULED anti-seizure medications. "
         "Do NOT count rescue or PRN medications (e.g., diazepam rectal, lorazepam PRN, "
         "intranasal midazolam) in emu_asm_number or emu_asm_type. "
-        "Apply the same rule for discharge ASMs (emu_asmdc_number, emu_asmdc_type)."
+        "Apply the same rule for discharge ASMs (emu_asmdc_number, emu_asmdc_type).\n"
+        "IMPORTANT for emu_asmdc_number and emu_asmdc_type: These refer to medications at DISCHARGE, "
+        "not admission. Look for a discharge medications section, phrases like 'discharged on', "
+        "'discharge medications include', 'at time of discharge', or 'sent home on'. "
+        "The discharge list may differ from admission — do not copy the admission list. "
+        "If the patient was discharged on zero ASMs, return '0' for emu_asmdc_number."
     ),
     "discharge": (
         "IMPORTANT for emu_sxcandidate: code 4 = not currently a surgical candidate but "
@@ -689,6 +719,17 @@ def _normalize_checkbox_item(value, choices: Dict[str, str]) -> Optional[str]:
     return _label_to_code(val_str, choices)
 
 
+# Fields where null model output should fall back to a clinically safe default.
+# Justified: EMU discharge summaries always document these if performed/ordered.
+# Absence of mention = "No".
+FIELD_DEFAULTS: Dict[str, str] = {
+    "pet_yn": "0",      # FDG-PET: not mentioned → No
+    "fmri_yn": "0",     # fMRI: not mentioned → No
+    "wada_yn": "0",     # WADA: not mentioned → No
+    "emu_asm_sfx": "3", # ASM side effects: not mentioned → No side effects
+}
+
+
 def normalize_fields(raw_fields: Dict) -> Dict:
     """Normalize model output: map text labels to codes, unwrap complex objects."""
     out = {}
@@ -730,6 +771,11 @@ def normalize_fields(raw_fields: Dict) -> Dict:
                 out[var] = None
             else:
                 out[var] = str(value).strip()
+
+    # Apply clinically justified defaults for fields where null = "No/None"
+    for var, default_code in FIELD_DEFAULTS.items():
+        if out.get(var) is None or out.get(var) == "":
+            out[var] = default_code
 
     return out
 
