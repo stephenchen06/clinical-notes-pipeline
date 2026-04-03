@@ -1,0 +1,444 @@
+﻿"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,phi,,text,"Record ID",,,,,,,,,,,,,
+phi_first_name,phi,,text,"First Name",,,,,,y,,y,,,,,
+phi_last_name,phi,,text,"Last Name",,,,,,y,,y,,,,,
+phi_mrn,phi,,text,MRN,,"Must be 12 digit Epic MRN",epic_mrn,,,y,,y,,,,,
+phi_dob,phi,,text,"Date of Birth",,,date_mdy,,,y,,y,,,,,
+phi_zipcode,phi,,text,"Zip Code",,,zipcode,,,y,,,,,,,
+phi_telephone,phi,,text,"Telephone Number",,,phone,,,y,,,,,,,
+phi_inmate,phi,,radio,Inmate?,"1, Yes | 0, No",,,,,y,,y,,,,,
+demo_gender,demographics,,radio,"Patient Identified Gender","1, Male | 2, Female | 3, Transgender | 4, Non-binary | 99, Other",,,,,,,,,,,,
+demo_gender_other,demographics,,text,"If other, please describe",,,,,,,"[demo_gender] = '99'",,,,,,
+demo_age,demographics,,calc,"Patient's Age","rounddown(datediff([phi_dob], 'today', 'y'))",,,,,,,,,,,,
+demo_race,demographics,,dropdown,Race,"1, American Indian or Alaska Native | 2, Asian/ Asian-American | 3, Black/ African-American | 4, Middle Eastern or North African | 5, Native Hawaiian or Other Pacific Islander | 6, White/ Caucasian | 7, Multiple races | 0, Unknown | 99, Other","What is patient's race?",,,,,,y,,,,,
+demo_race_other,demographics,,text,"Race - Multiple or Other",,,,,,,"[demo_race] = '7' or [demo_race] = '99'",,,,,," @PLACEHOLDER=""Please Specify"""
+demo_ethnicity,demographics,,dropdown,"Hispanic or Latinx?","1, Yes | 2, No | 999, Unknown",Ethnicity,,,,,,y,,,,,
+demo_employed,demographics,,radio,Employed,"1, Yes | 0, No | 999, Unknown","Is the patient currently employed?",,,,,,,,,,,
+demo_education,demographics,,radio,Education,"0, 12th grade or less | 1, High school or equivalent | 2, College or equivalent | 3, Associate's Degree | 4, Bachelor's Degree | 5, Post-Graduate Degree | 999, Unknown","Highest degree completed",,,,,,,,,,,
+demo_language,demographics,,radio,"What is Primary Language of patient?","1, English | 2, Spanish | 3, Chinese | 4, Arabic | 5, French | 6, Vietnamese | 7, German | 8, Indian/ Indian Subcontinent (including Hindi, Urdu, Telugu, Pundjabi, etc) | 9, Japanese | 10, Korean | 11, Russian | 12, Portuguese | 13, Sign language | 999, Other {demo_language_other}","Indian includes Hindi Tegulu and Tamil",,,,,,,,,,,
+demo_language_other,demographics,,text,"Please specify",,,,,,,"[demo_language] = '999'",,,,,," @PLACEHOLDER=""Please Specify"""
+demo_language_translator,demographics,,yesno,"Translator needed",,,,,,,,,,,,,
+demo_insurance,demographics,,radio,Insurance,"1, Private | 2, Medicare | 3, Medicaid/ Managed Medicaid | 4, Veterans Administration/ Tricare | 5, Other Government | 6, Self-Pay/ Charity Care | 0, Unknown | 99, Other",,,,,,,,,,,,
+insure_other,demographics,,text,"If Other insurance, please describe",,,,,,,"[demo_insurance] = '99'",,,,,,
+demo_transport,demographics,,dropdown,Transportation,"0, No reliable transportation | 1, Personal car (pt is able to drive) | 2, Ride from family/ friend | 3, Public Transportation | 4, Insurance-facilitated transportation | 5, Facility transportation (eg inmate or group home) | 6, Unknown | 99, Other","How does patient typically attend medical appointments?",,,,,,,,,,,
+transport_other,demographics,,text,"If other form of transportation, please describe",,,,,,,"[demo_transport] = '99'",,,,,,
+demo_transport_none,demographics,,notes,"If no reliable transportation, what is plan for transportation?",,"What is plan to help get transportation for pt?",,,,,"[demo_transport] = '0'",,,,,,
+demo_referral,demographics,,radio,"Initial Referral Source to UNC Neurology","1, UNC Epilepsy (different provider) | 2, UNC Neurology (different provider) | 3, UNC Non-Neurology | 4, External Neurology | 5, External Non-Neurology | 6, Other | 999, Unknown",,,,,,,,,,,,
+demo_referral_other,demographics,,text,"For initial referral sources outside of UNC, please specify",,,,,,,"[demo_referral] = '4' or [demo_referral] = '5' or [demo_referral] = '6'",,,,,," @PLACEHOLDER=""Please specify"""
+demo_ref_date,demographics,,text,"What was initial referral date to UNC Neurology?",,"Check media tab for referral form",date_mdy,,,y,"[demo_referral] = '4' or [demo_referral] = '5' or [demo_referral] = '3' or [demo_referral] = '6'",,,,,,
+hand_dom,medical_history,,dropdown,Hand-dominance,"1, Left | 2, Right | 3, Ambidextrous | 99, Other","Which is patient's dominant hand?",,,,,,,,,,,
+handdom_other,medical_history,,text,"If other for hand-dominance, please describe",,"Include unclear if not clear from chart",,,,,"[hand_dom] = '99'",,,,,,
+sz_age,medical_history,,text,"What was patient's age at seizure onset?",,"Age in years",integer,0,,,,,,,,,
+medhx_etio,medical_history,,radio,"Suspected Seizure type","0, Generalized | 1, Focal / Multifocal | 2, Both (Focal and Generalized) | 3, Psychogenic Non-Epileptic Events/ FND | 4, Physiological Non-Epileptic Events/Other {medhx_etio_other} | 5, Combined/ Multiple (eg FND and focal epilepsy) | 999, Unknown","Multiple selections are allowed",,,,,,,,,,," @NONEOFTHEABOVE = ""999"""
+medhx_etio_other,medical_history,,text,"Physiologic Non-Epileptic Events - Other (Specify)",,,,,,,"[medhx_etio] = '4'",,,,,," @PLACEHOLDER=""Please Specify"""
+medhx_etio_mult,medical_history,,text,"If Combined or Multiple, please describe",,,,,,,"[medhx_etio] = '5'",,,,,,
+medhx_etio_focal,medical_history,,checkbox,"Etiology of Seizure","1, Mesial-temporal sclerosis | 2, Prior TBI | 3, Post-stroke/ Vascular injury | 4, Post-infectious | 5, Tumor | 6, Vascular lesion | 7, Cortical Dysplasia, Migrational Abnormality | 8, Autoimmune/ Inflammatory | 9, Genetic | 10, Other Lesion {medhx_etio_focal_other} | 999, Unknown","Multiple selections are allowed",,,,,"[medhx_etio] = '1' or [medhx_etio] = '2'",,,,,,
+medhx_etio_focal_other,medical_history,,text,"Etiology of Seizure - Other",,,,,,,,,,,,,
+medhx_szsyndrome,medical_history,,dropdown,"Does patient have a confirmed epilepsy syndrome?","1, Yes | 2, No | 999, Unknown",,,,,,,,,,,,
+medhx_szsyndrome_type,medical_history,,dropdown,"If yes, please select epilepsy syndrome","1, Mesial temporal lobe epilepsy with hippocampal sclerosis (MTLE-HS) | 2, Lennox Gastaut syndrome (LGS) | 3, CDKL5-DEE | 4, Childhood absence epilepsy (CAE) | 5, Childhood occipital visual epilepsy (COVE) | 6, Developmental epileptic encephalopathy with spike-and-wave activation in sleep (DEE-SWAS) | 7, Dravet Syndrome (DS) | 8, Early infantile developmental and epileptic encephalopathy (EIDEE) | 9, Epilepsy in infancy with migrating focal seizures (EIMFS) | 10, Epilepsy with auditory features (EAF) | 11, Epilepsy with eyelid myoclonia (EEM) | 12, Juvenile myoclonic epilepsy (JME) | 999, Other",,,,,,"[medhx_szsyndrome] = '1'",,,,,,
+medhx_szsyndrome_other,medical_history,,text,"If other seizure syndrome, please describe",,,,,,,"[medhx_szsyndrome_type] = '999'",,,,,,
+medhx_prior_episgy,medical_history,,dropdown,"Did patient undergo previous surgery for epilepsy?","1, Yes | 2, No | 3, Unknown","Including neuromodulation",,,,,,,,,,,
+medhx_priorepisgy_type,medical_history,,checkbox,"If Yes, please select all that apply","1, Lesionectomy | 2, Anterior temporal lobectomy | 3, Selective Amygdalohippocampectomy | 4, Neocortical resection | 5, Multi-lobar resection | 6, Hemispherotomy/ -ectomy | 7, Open corpus callosotomy | 8, Laser corpus callosotomy | 9, Laser ablation (LITT) | 10, Radiofrequency ablation | 11, Multiple subpial transections | 12, Vagus nerve stimulator | 13, Deep brain stimulator | 14, Responsive neurostimulator | 999, Other","Multiple selections are allowed",,,,,"[medhx_prior_episgy] = '1'",,,,,,
+medhx_neurohx,medical_history,,checkbox,"Neurological Co-morbidities","1, Ischemic Stroke | 2, Intra-cranial Hemorrhage | 3, Traumatic Brain Injury | 4, Dementia/Mild Cognitive Injury | 5, Headaches | 6, Idiopathic Parkinson's Disease | 7, Tremors and Other non-PD Movement Disorders | 8, Other {medhx_neurohx_other} | 0, None of the above | 999, Unknown","Multiple selections are allowed",,,,,,,,,,," @NONEOFTHEABOVE=0"
+medhx_neurohx_other,medical_history,,text,"Neurology Co-morbidity - Other",,,,,,,,,,,,," @PLACEHOLDER=""Please specify"""
+medhx_psych,medical_history,,checkbox,"Psychiatric Co-Morbidities","1, Depression | 2, Anxiety | 3, Bipolar Disorder | 4, PTSD | 5, Schizophrenia or other psychotic disorder | 6, Alcohol/Substance Use Disorder | 7, Other {medhx_psych_other} | 0, None of the above | 999, Unknown","Multiple selections are allowed",,,,,,,,,,," @NONEOFTHEABOVE=0"
+medhx_psych_other,medical_history,,text,"Psych Co-morbidity - Other",,,,,,,,,,,,," @PLACEHOLDER=""Please specify"""
+medhx_si,medical_history,,yesno,"Known history of Suicidal Ideation/Suicide Attempt?",,,,,,,,,,,,,
+medhx_carepartner,medical_history,,dropdown,"Does this patient have actively involved care partner?","1, Yes | 2, No | 0, Unknown",,,,,,,,,,,,
+medhx_careprt_who,medical_history,,dropdown,"Who is patient's actively involved care partner?","1, Spouse | 2, Parent | 3, Sibling | 4, Child/ children | 5, Significant other/ life partner | 6, Other family | 7, Legal guardian | 8, Friend | 99, Other/ not listed",,,,,,"[medhx_carepartner] = '1'",,,,,,
+medhx_careprt_other,medical_history,,text,"If other or not listed, please describe relationship of care partner to patient",,,,,,,"[medhx_careprt_who] = '99'",,,,,,
+demo_adls,medical_history,,radio,"Can patient complete own ADLs","1, Yes without assistance | 2, Yes with assistance | 3, No | 4, Unknown",,,,,,,,,,,,
+medhx_osss_yn,medical_history,,yesno,"Was Oslo Social Support Scale (OSSS-3) administered?",,,,,,,,,,,,,
+demo_socialsupport,medical_history,,radio,"What is patient's degree of social support","1, Good (OSSS 12-14) | 2, Moderate (OSSS 9-11) | 3, Poor (OSSS 3-8) | 4, Unclear/ Unknown","Oslo Social Support Scale Result",,,,,"[medhx_osss_yn] = '1'",,,,,,
+medhx_driving,medical_history,,dropdown,"Is this patient currently driving?","1, Yes | 2, No | 3, Unclear/ unknown",,,,,,,,,,,,
+medhx_shoulddrive,medical_history,,dropdown,"Is this patient cleared by neurologist or DMV to drive?","1, Yes | 2, No | 3, Unclear/ Unknown",,,,,,,,,,,,
+medhx_sgy_cand_yn,medical_history,,radio,"Is this patient a surgical candidate?","1, Yes | 2, No | 3, Unclear",,,,,,,,,,,,
+medhx_date_sgycand,medical_history,,text,"What date was pt determined to be a surgical candidate?",,"Use Phase 1 EMU discharge date",date_mdy,,,y,"[medhx_sgy_cand_yn] = '1'",,,,,,
+emu_admission_referraldate,emu_admission,,text,"Date Referred for EMU",,,date_mdy,,,y,,,,,,,
+emu_admission_purpose,emu_admission,,checkbox,"Purpose of Admission","0, Diagnostic Evaluation/ Characterization | 1, Phase 1 | 2, Medication cross-titration | 3, Phase 2 | 4, SPECT | 5, Urgent Add-On","Multiple selections acceptable",,,,,,y,,,,,
+emu_referring_provider,emu_admission,,dropdown,"Referring Provider","1, Dr. Angela Wabulya | 2, Dr. Lynn Liu | 3, Dr. Atif Sheikh | 4, Dr. Brandon Waters | 5, Dr. Suzette LaRoche | 6, Dr. Haewon Shin | 7, Dr. Brad Vaughn | 8, Shabina Sheikh | 9, Linh Ngo | 10, Dr. Geetika Bajpai | 0, Other",,,,,,,y,LH,,,,
+emu_refprovider_other,emu_admission,,text,"If other, who was referring provider?",,,,,,,[emu_referring_provider]=0,,LH,,,,
+emu_clinic_refer,emu_admission,,dropdown,"Clinic / Place of Referral","1, Meadowmont/ Finley | 2, Panther Creek | 3, Pardee | 4, Outside Clinic",,,,,,,,,,,,
+emu_admit_yn,emu_admission,,yesno,"Was patient admitted to EMU?",,"EMU admission on scheduled date or subsequent date?",,,,,,y,,,,,
+emu_admit_no,emu_admission,,dropdown,"If no, why was patient never admitted to EMU?","1, Rescheduled with date pending | 2, COVID or other illness | 3, Change in provider recommendations | 4, Financial/ Insurance | 5, Transportation | 6, Family/ childcare | 7, Cancelled without reason | 8, Unable to Contact | 0, Unknown | 999, Cancelled for other reason",,,,,,"[emu_admit_yn] = '0'",,,,,,
+emu_no_other,emu_admission,,text,"If cancelled for other reason, please describe",,"'Other' reason for EMU cancellation",,,,,"[emu_admit_no] = '999'",,,,,,
+emu_date,emu_admission,,descriptive,"<div class=""rich-text-field-label""><div class=""rich-text-field-label""> <table style=""border-collapse: collapse; width: 78.2486%; height: 145.057px;"" border=""1""> <tbody> <tr style=""height: 24.1761px;""> <td style=""width: 55.2929%;"">Date of:</td> <td style=""width: 44.8125%;""> </td> </tr> <tr style=""height: 24.1761px;""> <td style=""width: 55.2929%;"">Scheduled Admission</td> <td style=""width: 44.8125%;""> {emu_date_scheduled} </td> </tr> <tr style=""height: 24.1761px;""> <td style=""width: 55.2929%;""> <p>Actual Admission </p> </td> <td style=""width: 44.8125%;""> {emu_date_admit}</td> </tr> <tr style=""height: 24.1761px;""> <td style=""width: 55.2929%;""> <p>Discharge Date</p> </td> <td style=""width: 44.8125%;""> <p> {emu_date_dc}</p> </td> </tr> <tr style=""height: 24.1761px;""> <td style=""width: 55.2929%;""> <p>Duration of Hospital Stay</p> </td> <td style=""width: 44.8125%;""> {emu_duration} days</td> </tr> </tbody> </table> <p> </p> </div></div>",,,,,,,,,,,,,
+emupre_suicide,emu_admission,,radio,"Is there a concern for active suicidal ideation?","1, Yes {emupre_suicide_concern} | 0, No | 999, Unknown",,,,,,,y,,,,,
+emupre_suicide_concern,emu_admission,,notes,"What steps have been taken to address suicide concerns?",,,,,,,"[emupre_suicide] = '1'",,,,,," @PLACEHOLDER=""What steps have been taken to address suicide concerns?"""
+emu_admission_cpt,emu_admission,,text,"CPT Code for Admission",,,,,,,,,,,,,
+emu_time,emu_admission,,descriptive,"<div class=""rich-text-field-label""><table style=""border-collapse: collapse; width: 60%; height: 107.625px;"" border=""1""> <tbody> <tr style=""height: 35.4375px;""> <td style=""width: 45.0158%; height: 35.4375px;"">Time of: </td> <td style=""width: 54.9842%; height: 35.4375px;""> </td> </tr> <tr style=""height: 18.1875px;""> <td style=""width: 45.0158%; height: 18.1875px;""> <p>Admission</p> </td> <td style=""width: 54.9842%; height: 18.1875px;"">{emu_time_roomed}</td> </tr> <tr style=""height: 18px;""> <td style=""width: 45.0158%; height: 18px;"">Connected to EEG</td> <td style=""width: 54.9842%; height: 18px;"">{emu_time_eeg}</td> </tr> </tbody> </table> <p>Time from Admission to getting connected to EEG: {emu_delay_eeg} hour(s)</p> <p>Reason for Delay {emu_delay_eeg_reason} </p> <p> </p> <p> </p></div>",,,,,,,,,,,,,
+emu_date_scheduled,emu_admission,,text,"Scheduled Admission Date",," Date only",date_mdy,,,y,,y,,,,,
+emu_date_admit,emu_admission,,text,"Actual Admission Date",," Date only",date_mdy,,,y,"[emu_admit_yn] = '1'",,,,,,
+emu_delay_admission,emu_admission,,radio,"Reason for Delay (Schedule Date to Actual Date)","1, Patient Related | 2, Hospital Related | 999, Other {emu_delay_other}","Multiple selections are allowed",,,,,"[emu_date_admit] > [emu_date_scheduled]",,,,,,
+emu_delay_other,emu_admission,,text,"If other reason for EMU admission delay, please describe",,,,,,,,,,,,,
+emu_delay_pt,emu_admission,,dropdown,"Reason for Delay - Patient ","1, COVID or other illness | 2, Transportation | 3, Family/ childcare | 4, Work schedule | 5, Insurance complication | 6, Reschedule by patient's facility | 0, No reason given for reschedule | 999, Rescheduled for other reason",,,,,,"[emu_delay_admission] = '1'",,,,,,
+emu_pt_other,emu_admission,,text,"If other patient reason for EMU admission delay, please describe",,,,,,,"[emu_delay_pt] = '999'",,,,,,
+emu_delay_hosp,emu_admission,,dropdown,"Reason for Delay - Hospital","1, Bed unavailable | 0, Unknown | 999, Other",,,,,,"[emu_delay_admission] = '2'",,,,,,
+emu_hosp_other,emu_admission,,text,"If other hospital-related reason for EMU admission delay, please describe",,,,,,,"[emu_delay_hosp] = '999'",,,,,,
+one_memorial,emu_admission,,yesno,"Was patient admitted to 1 Memorial or Surgical Obs?",,,,,,,"[emu_admit_yn] = '1'",,,,,,
+emu_probs,emu_admission,,yesno,"Were there non-scheduling issues that arose during EMU Admission?",,"Select no if no reported problems",,,,,"[emu_date_admit] > 0",,,,,,
+emu_complications,emu_admission,,checkbox,"What were non-scheduling issues that arose during Admission?","1, Incomplete Evaluation - No events captured | 2, Behavioral complication | 3, Patient left AMA/ early | 4, Admission to incorrect unit | 5, Scalp irritation | 99, Other {emu_comp_other}","Multiple selections are allowed",,,,,"[emu_probs] = 1",,,,,,
+emu_comp_other,emu_admission,,text,"If other complications during EMU admission, please describe",,,,,,,,,,,,,
+emu_day_admitted,emu_admission,,radio,"Day of week that patient was admitted","1, Monday | 2, Tuesday | 3, Wednesday | 4, Thursday | 5, Friday | 6, Saturday | 7, Sunday",,,,,,,y,LH,,,,
+emu_admit_attending,emu_admission,,dropdown,"EMU Attending on admission","1, Dr. Angela Wabulya | 2, Dr. Atif Sheikh | 3, Dr. Brandon Waters | 4, Dr. Lynn Liu | 5, Dr. Albert Hinn | 6, Dr. Brad Vaughn | 7, Dr. Haewon Shin | 8, Dr. Suzette LaRoche | 9, Dr. Geetika Bajpai | 999, Other","Choose only 1",,,,,"[emu_date_admit] <> 0",,,,,,
+emu_attend_other,emu_admission,,text,"If other, who was EMU attending on admission?",,"Please type name",,,,,"[emu_admit_attending] = '999'",,,,,,
+emu_time_roomed,emu_admission,,text,"Time Patient Admitted",,,datetime_mdy,,,y,,,,,,,
+emu_time_eeg,emu_admission,,text,"Time of EEG Connection",,,datetime_mdy,,,y,,,,,,,
+emu_delay_eeg,emu_admission,,calc,"Time from Rooming to EEG hookup","datediff([emu_time_roomed], [emu_time_eeg], ""h"", true)","in hours",,,,,,,,,,,
+emu_delay_eeg_reason,emu_admission,,text,"Reason for delay from getting admitted to getting hooked up to EEG",,,,,,,"[emu_delay_eeg] >= 1",,,,,," @PLACEHOLDER=""Reason for delay"""
+emu_date_dc,emu_admission,,text,"EMU discharge date",,,date_mdy,,,y,"[emu_admit_yn] = '1'",y,,,,,
+emu_duration,emu_admission,,calc,"EMU duration","datediff([emu_date_admit], [emu_date_dc], ""d"", true)",,,,,,,,,,,,
+emu_asm_number,emu_admission,"Anti-Seizure Medications (ASMs) on Admission
+",dropdown,"Number of Anti-Seizure Medications (ASMs) on Admission","0, None | 1, One | 2, Two | 3, Three | 4, Four | 5, Five or more","Do NOT Include Rescue Medications",,,,,,y,,,,,
+emu_asm_type,emu_admission,,checkbox,"Which ASM(s) was patient taking on admission?","1, levetiracetam | 2, lamotrigine | 3, carbamazepine | 4, oxcarbazepine | 5, eslicarbazepine | 6, brivaracetam | 7, topiramate | 8, zonisamide | 9, clobazam | 10, clonazepam | 11, diazepam | 12, lorazepam | 13, valproic acid | 14, gabapentin | 15, lacosamide | 16, pregabalin | 17, phenytoin | 18, phenobarbital | 19, cannabidiol | 20, cenobamate | 21, ethosuximide | 22, rufinamide | 23, felbamate | 24, perampanel | 25, acetazolamide | 26, primidone | 27, stiripentol | 28, vigabatrin | 29, fenfluramine | 99, Other {asm_type_other}","Select all that apply",,,,,"[emu_asm_number] > 0",,LH,,,,
+asm_type_other,emu_admission,,text,"If other, what additional ASM(s) was patient taking on EMU admission?",,"Please include medications not checked above",,,,,,,LH,,,," @PLACEHOLDER"
+emu_asm_dose,emu_admission,,dropdown,"Were ASMs at therapeutic levels?","1, Yes | 2, Some but not all | 3, No | 99, N/A","Select N/A if not taking ASMs",,,,,"[emu_asm_number] > 0",,,,,,
+emu_asm_sfx,emu_admission,,dropdown,"Was patient experiencing side effects from ASMs","1, yes - dose limiting | 2, yes - not dose limiting | 3, no | 99, unclear",,,,,,"[emu_asm_number] > 0",,,,,,
+asm_sfx_desc,emu_admission,,radio,"What were ASM side effects?","1, dizzy or lightheaded | 2, diplopia | 3, nausea or vomiting | 4, fatigue or sleepiness | 5, cognitive 'fogginess' | 6, depression or irritability | 7, insomnia | 8, abdominal pain or diarrhea | 9, neuropathy or body 'tingling' | 0, Multiple side effects | 999, other","Select only one",,,,,"[emu_asm_sfx] = 1 or [emu_asm_sfx] = 2",,,,,,
+emu_asm_sfx_other,emu_admission,,notes,"If multiple or unlisted side effects, please describe symptoms",,,,,,,"[asm_sfx_desc] = '0' or [asm_sfx_desc] = '999'",,,,,,
+emu_asm_rescue_yn,emu_admission,,yesno,"Was patient prescribed rescue medication prior to admission?",,"Include extra doses of scheduled ASM",,,,,,y,,,,,
+emu_rescue_timing,emu_admission,,dropdown,"When was last time used rescue ASM?","1, Today | 2, Within last week | 3, Within last month | 4, Within last 6 months | 5, Within last year | 6, More than year ago | 7, Never",,,,,,"[emu_asm_rescue_yn] = 1",,,,,,
+emu_rescue_type,emu_admission,,dropdown,"Type of ASM 
+(Include additional doses of scheduled ASMs)","1, Intranasal midazolam | 2, Intranasal diazepam | 3, Rectal diazepam | 4, Clonazepam - ODT or tablet | 5, Lorazepam | 6, Clobazam | 0, Multiple | 99, Other","Check all that apply",,,,,"[emu_asm_rescue_yn] = 1",,,,,,
+emu_rescue_other,emu_admission,,text,"If multiple or other, please list rescue ASM(s)",,,,,,,"[emu_rescue_type] = '99' or [emu_rescue_type] = '0'",,,,,,
+emu_asmdc_number,emu_admission,"Anti-Seizure Medications (ASMs) on Discharge
+",dropdown,"Number of Anti-Seizure Medications (ASMs) on Discharge","0, None | 1, One | 2, Two | 3, Three | 4, Four | 5, Five or more","Do NOT Include Rescue Medications",,,,,,y,,,,,
+emu_asmdc_type,emu_admission,,checkbox,"Which ASM(s) was patient taking on discharge?","1, levetiracetam | 2, lamotrigine | 3, carbamazepine | 4, oxcarbazepine | 5, eslicarbazepine | 6, brivaracetam | 7, topiramate | 8, zonisamide | 9, clobazam | 10, clonazepam | 11, diazepam | 12, lorazepam | 13, valproic acid | 14, gabapentin | 15, lacosamide | 16, pregabalin | 17, phenytoin | 18, phenobarbital | 19, cannabidiol | 20, cenobamate | 21, ethosuximide | 22, rufinamide | 23, felbamate | 24, perampanel | 25, acetazolamide | 26, primidone | 27, stiripentol | 28, vigabatrin | 29, fenfluramine | 99, Other {asmdc_type_other}","Select all that apply",,,,,"[emu_asmdc_number] > 0",,LH,,,,
+asmdc_type_other,emu_admission,,text,"If other, what additional ASM(s) was patient taking on EMU discharge?",,"Please include medications not checked above",,,,,,,LH,,,," @PLACEHOLDER"
+emudc_asm_rescue,emu_admission,,dropdown,"Was patient prescribed rescue medication upon discharge?","1, Yes | 2, No | 3, Continuation of pre-admission rescue ASM | 0, Other/ Unknown","Include extra doses of scheduled ASM",,,,,,y,,,,,
+emudc_rescue_other,emu_admission,,text,"If other or unknown, please describe",,,,,,,"[emudc_asm_rescue] = '0'",,,,,,
+emudc_rescue_type,emu_admission,,dropdown,"Type of ASM 
+(Include additional doses of scheduled ASMs)","1, Intranasal midazolam | 2, Intranasal diazepam | 3, Rectal diazepam | 4, Clonazepam - ODT or tablet | 5, Lorazepam | 6, Clobazam | 0, Multiple | 99, Other","Check all that apply",,,,,"[emudc_asm_rescue] = '1' or [emudc_asm_rescue] = '3'",,,,,,
+emudc_rescue_other2,emu_admission,,text,"If multiple or other, please list rescue ASM(s)",,,,,,,"[emudc_rescue_type] = '99' or [emudc_rescue_type] = '0'",,,,,,
+emu_sz_type,emu_admission,"Seizure Types on Admission",dropdown,"Please select most frequent seizure type","1, Primary generalized tonic-clonic | 2, Focal motor with retained awareness | 3, Focal non-motor with retained awareness (includes primary sensory/ autonomic) | 4, Focal motor with impaired awareness | 5, Focal non-motor with impaired awareness | 6, Events with retained awareness - NOS | 7, Staring spells +/- Behavioral arrest - NOS | 8, Hypermotor - NOS | 9, Myoclonus / Brief jerks | 10, Convulsions NOS | 99, Other","Select only 1",,,,,,y,,,,,
+emu_sz_type_other,emu_admission,,notes,"If Other, please describe",,"Briefly Describe Seizure Semiology",,,,,"[emu_sz_type] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type1_freq,emu_admission,,dropdown,"Frequency of Primary Seizure Type","1, Multiple times per day | 2, Daily | 3, Multiple times per week | 4, Weekly | 5, Multiple times per month | 6, Monthly | 7, Multiple times per year | 8, Yearly or less frequent | 9, Random clusters | 99, Other",,,,,,,,,,,,
+emu_sz1_freq_other,emu_admission,,text,"If Other, please describe",,"Please describe frequency",,,,,"[emu_sz_type1_freq] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type1_timing,emu_admission,,dropdown,"Timing of Last Seizure - Most Common Seizure Type","1, Today | 2, Yesterday | 3, Within past week | 4, Within past 2 weeks | 5, Within past month | 6, Within past 3 months | 7, Within past 6 months | 8, Within past year | 9, More than a year ago | 99, Other","Choose only 1",,,,,,,,,,,
+emu_sz1_timing_other,emu_admission,,text,"If Other, please describe",,"Please describe timing of last seizure/ event",,,,,"[emu_sz_type1_timing] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type2_yn,emu_admission,,yesno,"Does patient have other seizure/ event types?",,,,,,,,,,,,,
+emu_sz_type2,emu_admission,,dropdown,"Please select SECOND most frequent seizure type","1, Primary generalized tonic-clonic | 2, Focal motor with retained awareness | 3, Focal non-motor with retained awareness (includes primary sensory/ autonomic) | 4, Focal motor with impaired awareness | 5, Focal non-motor with impaired awareness | 6, Events with retained awareness - NOS | 7, Staring spells +/- Behavioral arrest - NOS | 8, Hypermotor - NOS | 9, Myoclonus / Brief jerks | 10, Convulsions NOS | 99, Other","Select only 1",,,,,"[emu_sz_type2_yn] = '1'",y,,,,,
+emu_sz_type2_other,emu_admission,,notes,"If Other, please describe",,"Briefly Describe ""Other"" Seizure Semiology",,,,,"[emu_sz_type2] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type2_freq,emu_admission,,dropdown,"Frequency of Secondary Seizure Type","1, Multiple times per day | 2, Daily | 3, Multiple times per week | 4, Weekly | 5, Multiple times per month | 6, Monthly | 7, Multiple times per year | 8, Yearly or less frequent | 9, Random clusters | 99, Other",,,,,,"[emu_sz_type2_yn] = '1'",,,,,,
+emu_sz2_freq_other,emu_admission,,text,"If Other, please describe",,"Please describe frequency",,,,,"[emu_sz_type2_freq] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type2_timing,emu_admission,,dropdown,"Timing of Last Seizure - SECOND Most Common Seizure Type","1, Today | 2, Yesterday | 3, Within past week | 4, Within past 2 weeks | 5, Within past month | 6, Within past 3 months | 7, Within past 6 months | 8, Within past year | 9, More than a year ago | 99, Other","Choose only 1",,,,,"[emu_sz_type2_yn] = '1'",,,,,,
+emu_sz2_timing_other,emu_admission,,text,"If Other, please describe",,"Please describe timing of last seizure/ event",,,,,"[emu_sz_type2_timing] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type3_yn,emu_admission,,yesno,"Does patient have other seizure/ event types?",,,,,,,"[emu_sz_type2_yn] = '1'",,,,,,
+emu_sz_type3,emu_admission,,dropdown,"Please select THIRD most common seizure type","1, Primary generalized tonic-clonic | 2, Focal motor with retained awareness | 3, Focal non-motor with retained awareness (includes primary sensory/ autonomic) | 4, Focal motor with impaired awareness | 5, Focal non-motor with impaired awareness | 6, Events with retained awareness - NOS | 7, Staring spells +/- Behavioral arrest - NOS | 8, Hypermotor - NOS | 9, Myoclonus / Brief jerks | 10, Convulsions NOS | 99, Other","Select only 1",,,,,"[emu_sz_type3_yn] = '1'",y,,,,,
+emu_sz_type3_other,emu_admission,,notes,"If Other, please describe",,"Briefly Describe Seizure Semiology",,,,,"[emu_sz_type3] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type3_freq,emu_admission,,dropdown,"Frequency of THIRD Seizure Type","1, Multiple times per day | 2, Daily | 3, Multiple times per week | 4, Weekly | 5, Multiple times per month | 6, Monthly | 7, Multiple times per year | 8, Yearly or less frequent | 9, Random clusters | 99, Other",,,,,,"[emu_sz_type3_yn] = '1'",,,,,,
+emu_sz3_freq_other,emu_admission,,text,"If Other, please describe",,"Please describe frequency",,,,,"[emu_sz_type3_freq] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type3_timing,emu_admission,,dropdown,"Timing of Last Seizure - Most Common Seizure Type","1, Today | 2, Yesterday | 3, Within past week | 4, Within past 2 weeks | 5, Within past month | 6, Within past 3 months | 7, Within past 6 months | 8, Within past year | 9, More than a year ago | 99, Other","Choose only 1",,,,,"[emu_sz_type3_yn] = '1'",,,,,,
+emu_sz3_timing_other,emu_admission,,text,"If Other, please describe",,"Please describe timing of last seizure/ event",,,,,"[emu_sz_type3_timing] = '99'",,,,,," @PLACEHOLDER"
+emu_sz_type4_yn,emu_admission,,yesno,"Does patient have other seizure/ event types?",,,,,,,"[emu_sz_type3_yn] = '1'",,,,,,
+emu_sz_type4_describe,emu_admission,,notes,"Please describe all other seizure types",,"Including semiology, frequency, and timing of last seizure",,,,,"[emu_sz_type4_yn] = '1'",,,,,," @PLACEHOLDER"
+emu_dcevents,emu_admission,"Summary of EMU Admission",radio,"Events Captured","1, All events captured | 2, Not all events captured | 0, No events captured",,,,,,"[emu_date_dc] > ""0""",,,,,,
+emu_dcevents_type,emu_admission,,radio,"Discharge Diagnosis","1, Epilepsy | 2, FND | 3, Mixed FND and Epilepsy | 4, Physiologic Non-epileptic Events | 5, Inconclusive study | 6, Other {emu_dcevents_other}","Please comment specific epilepsy diagnosis if known",,,,,"[emu_date_dc] <> 0",,,,,,
+emu_dcevents_other,emu_admission,,text,"Other - Discharge Diagnosis",,,,,,,"[emu_dcevents_type] = '6'",,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+emu_epilepsytype,emu_admission,,dropdown,"Epilepsy Type","1, Focal - Single focus | 2, Focal - Two foci | 3, Multifocal (3+ foci) | 4, Generalized - idiopathic | 5, Generalized - symptomatic | 6, Unlocalizable",,,,,,"[emu_dcevents_type] = '1' or [emu_dcevents_type] = '3'",,,,,,
+emu_epilepsy_intract,emu_admission,,dropdown,"Is the patient's epilepsy medically refractory?","1, Yes | 2, No | 3, Unclear",,,,,,"[emu_dcevents_type] = '1' or [emu_dcevents_type] = '3'",,,,,,
+emu_dcsztype,emu_admission,,checkbox,"Seizure Types","1, Focal aware | 2, Focal impaired awareness | 3, Focal to bilateral tonic clonic | 4, Generalized tonic clonic | 5, Generalized other motor | 6, Generalized non-motor | 999, Other/ Unknown",,,,,,"[emu_dcevents_type] = '1' or [emu_dcevents_type] = '3'",,,,,,
+emu_dcsztype_other,emu_admission,,text,"If other/ unknown, please describe",,,,,,,"[emu_dcsztype(999)] = '1'",,,,,,
+emu_sxcandidate,emu_admission,,radio,"Surgery Candidate","1, Yes, and surgery was discussed | 2, Yes, but patient not amenable | 3, Yes, but have not discussed | 4, Not currently but possible in future {emu_sxcandidate_reason} | 5, No | 999, Unknown","Is patient a surgery candidate?",,,,,"[emu_date_dc] > ""0""",,,,,,
+emu_sxcandidate_reason,emu_admission,,notes,"Reason for not being a current surgical candidate",,,,,,,"[emu_sxcandidate] = '4'",y,,,,," @PLACEHOLDER = ""Why?"""
+emu_followup,emu_admission,,radio,"Post-Discharge Follow Up","1, UNC Epilepsy | 2, UNC FND Clinic | 3, UNC Neurology | 4, UNC Non-Neurology | 5, External Neurology | 6, External Non-Neurology | 7, Other {emu_followup_other} | 999, Unknown",,,,,,"[emu_date_dc] > ""0""",,,,,,
+emu_followup_other,emu_admission,,text,"Follow up Other",,,,,,,"[emu_followup] = '6'",y,,,,," @PLACEHOLDER= ""Please Specify"""
+emu_video,emu_admission,,yesno,"Was video consent obtained for teaching?",,,,,,,"[emu_admit_yn] = '1'",,,,,,
+p1_ii_or_ictal,phase_i_interictal_ictal,"Phase 1 Findings",radio,"Phase 1 Finding Type","1, Interictal | 2, Ictal","Can repeat this instance",,,,,,,,,,,
+p1_ii_type,phase_i_interictal_ictal,,radio,"Interictal type","1, Spike/Sharp +/- wave | 2, Slowing",,,,,,"[p1_ii_or_ictal] = '1'",,,,,," @NONEOFTHEABOVE = ""999"""
+p1_ii_slow,phase_i_interictal_ictal,,radio,"Slowing (continuous, intermittent)","0, Continuous | 1, Intermittent",,,,,,"[p1_ii_type] = '2'",,,,,,
+p1_ii_rhythmic,phase_i_interictal_ictal,,radio,"Slowing (non-rhythmic, rhythmic)","0, non-rhythmic | 1, rhythmic",,,,,,"[p1_ii_type] = '2'",,,,,,
+p1_ii_lateralization,phase_i_interictal_ictal,,radio,"Phase I Interictal Lateralization","1, Left | 2, Right | 3, Midline | 4, Generalized",,,,,,"[p1_ii_type] = '1'",,,,,,
+p1_ii_localization,phase_i_interictal_ictal,,radio,"Phase I Interictal Localization","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Other",,,,,,"[p1_ii_lateralization] = '1' or [p1_ii_lateralization] = '2'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_ii_local_amp,phase_i_interictal_ictal,,checkbox,"Interictal - Anterior, Mid, Posterior?","1, Anterior | 2, Mid | 3, Posterior",,,,,,"[p1_ii_localization] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_ii_local_ml,phase_i_interictal_ictal,,radio,"Interictal - Mesial/Lateral?","0, Mesial | 1, Lateral",,,,,,"[p1_ii_localization] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_ii_localization_other,phase_i_interictal_ictal,,text,"Other Interictal localization",,,,,,,"[p1_ii_localization] = '5'",y,,,,," @PLACEHOLDER= ""Please specify"""
+p1_ii_localization_yn,phase_i_interictal_ictal,,yesno,"Secondary location for this interictal? ",,,,,,,"[p1_ii_localization] = '1' or [p1_ii_localization] = '2' or [p1_ii_localization] = '3' or [p1_ii_localization] = '4' or [p1_ii_localization] = '5'",,,,,,
+p1_ii_localization_2,phase_i_interictal_ictal,,radio,"Phase I Interictal Secondary Localization","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Central",,,,,,"[p1_ii_localization_yn] = '1'",,,,,,
+p1_ii_localization_3yn,phase_i_interictal_ictal,,yesno,"Third localization for this type of interictal?",,,,,,,"[p1_ii_localization_yn] = '1'",,,,,,
+p1_ii_localization_3,phase_i_interictal_ictal,,radio,"Phase I Interictal Third Localization","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Central",,,,,,"[p1_ii_localization_3yn] = '1'",,,,,,
+p1_sz_semiology,phase_i_interictal_ictal,,notes,"Seizure Semiology Description",,,,,,,"[p1_ii_or_ictal] = '2'",,,,,,
+p1_semi_lateralization,phase_i_interictal_ictal,,radio,"Phase I Semiology Lateralization","1, Left | 2, Right | 3, Unlateralizable",,,,,,"[p1_ii_or_ictal] = '2'",,,,,," @NONEOFTHEABOVE = ""999"""
+p1_semi_localization,phase_i_interictal_ictal,,radio,"Phase I Semiology Localization","1, Temporal | 2, Frontal (including SMA/ Primary Motor/ Insula) | 3, Parietal (including Primary Sensory) | 4, Occipital | 5, Other | 6, Unlocalizable",,,,,,"[p1_ii_or_ictal] = '2'",,,,,," @NONEOFTHEABOVE = ""999"""
+p1_semi_local_ml,phase_i_interictal_ictal,,radio,"Seizure - Semiology - Mesial/Lateral","0, Mesial | 1, Lateral",,,,,,"[p1_semi_localization] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_semi_local_amp,phase_i_interictal_ictal,,radio,"Seizure - Semiology - Anterior, Mid, Posterior ","1, Anterior | 2, Posterior",,,,,,"[p1_semi_localization] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_semi_local_other,phase_i_interictal_ictal,,text,"Other Semiology Localization",,,,,,,"[p1_semi_localization] = '5'",y,,,,," @PLACEHOLDER= ""Please specify"""
+p1_semi_localization_yn,phase_i_interictal_ictal,,yesno,"Secondary location for this semiology? ",,,,,,,"[p1_semi_localization] = '1' or [p1_semi_localization] = '2' or [p1_semi_localization] = '3' or [p1_semi_localization] = '4' or [p1_semi_localization] = '5'",,,,,,
+p1_semi_localization_2,phase_i_interictal_ictal,,radio,"Phase I Semiology Secondary Localization","1, Temporal | 2, Frontal (including SMA/ Primary Motor/ Insula) | 3, Parietal (including Primary Sensory) | 4, Occipital | 5, Central",,,,,,"[p1_semi_localization_yn] = '1'",,,,,,
+p1_sz_lateralization,phase_i_interictal_ictal,"Phase 1 Seizure Electrographic Onset",radio,"Phase I Seizure Electrographic Lateralization","1, Left | 2, Right | 3, Midline | 4, Generalized | 5, Unlateralizable",,,,,,"[p1_ii_or_ictal] = '2'",,,,,," @NONEOFTHEABOVE = ""999"""
+p1_sz_localization,phase_i_interictal_ictal,,radio,"Phase I Seizure Electrographic Localization ","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Other | 6, Unlocalizable",,,,,,"[p1_ii_or_ictal] = '2'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_sz_local_amp,phase_i_interictal_ictal,,checkbox,"Seizure - EEG - Anterior, Mid, Posterior ","1, Anterior | 2, Mid | 3, Posterior",,,,,,"[p1_sz_localization] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_sz_local_ml,phase_i_interictal_ictal,,radio,"Seizure - EEG - Mesial/Lateral","0, Mesial | 1, Lateral | 2, Sub-temporal",,,,,,"[p1_sz_localization] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+p1_sz_localization_yn,phase_i_interictal_ictal,,yesno,"Secondary location for this seizure? ",,,,,,,"[p1_sz_localization] = '1' or [p1_sz_localization] = '2' or [p1_sz_localization] = '3' or [p1_sz_localization] = '4' or [p1_sz_localization] = '5'",,,,,,
+p1_sz_localization_2,phase_i_interictal_ictal,,radio,"Phase I Seizure Secondary Localization","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Central",,,,,,"[p1_sz_localization_yn] = '1'",,,,,,
+p1_sz_local_temporal,phase_i_interictal_ictal,,text,"Number of seizures seen Temporal Lobe",,,integer,0,,,"[p1_sz_localization] = '1'",,,,,," @PLACEHOLDER=""# of seizures seen"""
+p1_sz_local_frontal,phase_i_interictal_ictal,,text,"Number of seizures seen Frontal Lobe",,,integer,,,,"[p1_sz_localization] = '2'",,,,,," @PLACEHOLDER=""# of seizures seen"""
+p1_sz_local_parietal,phase_i_interictal_ictal,,text,"Number of seizures seen Parietal Lobe",,,,,,,"[p1_sz_localization] = '3'",,,,,," @PLACEHOLDER=""# of seizures seen"""
+p1_sz_local_occipital,phase_i_interictal_ictal,,text,"Number of seizures seen in Occipital Lobe",,,,,,,"[p1_sz_localization] = '4'",,,,,," @PLACEHOLDER=""# of seizures seen"""
+p1_sz_local_other,phase_i_interictal_ictal,,text,"Number of seizures seen in ""Other""",,,,,,,"[p1_sz_localization] = '5'",,,,,," @PLACEHOLDER=""# of seizures seen"""
+p1_sz_local_other_type,phase_i_interictal_ictal,,text,"Other Seizure Type",,,,,,,"[p1_sz_localization] = '5'",y,,,,," @PLACEHOLDER= ""SPECIFY OTHER"""
+mri_yn,phase_i_imaging_neuropsych,MRI,radio,"MRI performed? ","1, Yes | 2, No but ordered | 0, No",,,,,,,,,,,,
+imaging_mri_date,phase_i_imaging_neuropsych,,text,"MRI - Date performed/Scheduled Date",,,date_mdy,,,y,"[mri_yn] = '1' or [mri_yn] = '2'",,,,,,
+mri_normal_abnormal,phase_i_imaging_neuropsych,,radio,"Was MRI Normal or Abnormal?","1, Normal | 2, Abnormal",,,,,,"[mri_yn] = '1'",,,,,,
+mri_report,phase_i_imaging_neuropsych,,notes,"Paste MRI Report",,,,,,,"[mri_yn] = '1'",,,,,," @PLACEHOLDER='Paste MRI Impression here'"
+mri_lateralization,phase_i_imaging_neuropsych,,radio,"MRI Lateralization","1, Left | 2, Right | 3, Bilateral | 4, Midline | 5, Multifocal",,,,,,"[mri_normal_abnormal] = '2'",,,,,,
+mri_l_localization,phase_i_imaging_neuropsych,,radio,"MRI Localization (Left)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[mri_lateralization] = '1' or [mri_lateralization] = '3' or [mri_lateralization] = '5'",,,,,," @NONEOFTHEABOVE=""999"""
+mri_local_l_amp,phase_i_imaging_neuropsych,,radio," MRI- Anterior, Posterior (left)","1, Anterior | 2, Posterior",,,,,,"[mri_l_localization] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+mri_local_l_ml,phase_i_imaging_neuropsych,,radio,"MRI - Mesial/Lateral (Left)","0, Mesial | 1, Lateral",,,,,,"[mri_l_localization] = '1'",,,,,," @NONEOFTHEABOVE=""3"""
+mri_l_local_other,phase_i_imaging_neuropsych,,text,"MRI - Specify Other (left)",,,,,,,"[mri_l_localization] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+mri_lesion_left,phase_i_imaging_neuropsych,,dropdown,"Please Indicate the Lesion (Left)","1, Hippocampal sclerosis/ Mesial temporal atrophy/ hyperintensity | 2, Cavernoma/ vascular lesion | 3, Neoplasm - including DNET & glioma | 4, Focal cortical dysplasia (FCD) | 5, Stroke/ Encephalomalacia (include TBI) | 6, Polymicrogyria | 7, Heterotopias | 8, Cortical Tubers / TSC | 0, Multiple | 99, Other","Select Only 1",,,,,"[mri_lateralization] = 1 or [mri_lateralization] = 3 or [mri_lateralization] = 5",,,,,,
+mri_lesion_l_mult,phase_i_imaging_neuropsych,,checkbox,"If multiple, Please indicate all lesion types (Left)","1, Hippocampal sclerosis/ Mesial temporal atrophy/ hyperintensity | 2, Cavernoma/ vascular lesion | 3, Neoplasm - including DNET & glioma | 4, Focal cortical dysplasia (FCD) | 5, Stroke/ Encephalomalacia (include TBI) | 6, Polymicrogyria | 7, Heterotopias | 8, Cortical Tubers / TSC","Select all that apply",,,,,"[mri_lesion_left] = '0'",,,,,,
+mri_lesion_l_other,phase_i_imaging_neuropsych,,text,"If Other, Please describe lesion type (Left)",,,,,,,"[mri_lesion_left] = 99",,,,,,
+mri_r_localization,phase_i_imaging_neuropsych,,radio,"MRI Localization (Right)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[mri_lateralization] = '2' or [mri_lateralization] = '3' or [mri_lateralization] = '5'",,,,,," @NONEOFTHEABOVE = '999'"
+mri_local_r_amp,phase_i_imaging_neuropsych,,radio," MRI- Anterior, Posterior (right)","1, Anterior | 2, Posterior",,,,,,"[mri_r_localization] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+mri_local_r_ml,phase_i_imaging_neuropsych,,radio,"MRI - Mesial/Lateral (right)","0, Mesial | 1, Lateral",,,,,,"[mri_r_localization] = '1'",,,,,," @NONEOFTHEABOVE=""3"""
+mri_r_local_other,phase_i_imaging_neuropsych,,text,"MRI - Specify Other (right)",,,,,,,"[mri_r_localization] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+mri_lesion_right,phase_i_imaging_neuropsych,,dropdown,"Please Indicate the Lesion (right)","1, Hippocampal sclerosis/ Mesial temporal atrophy/ hyperintensity | 2, Cavernoma/ vascular lesion | 3, Neoplasm - including DNET & glioma | 4, Focal cortical dysplasia (FCD) | 5, Stroke/ Encephalomalacia (include TBI) | 6, Polymicrogyria | 7, Heterotopias | 8, Cortical Tubers / TSC | 0, Multiple | 99, Other","Select Only 1",,,,,"[mri_lateralization] = 2 or [mri_lateralization] = 3 or [mri_lateralization] = 5",,,,,,
+mri_lesion_r_mult,phase_i_imaging_neuropsych,,checkbox,"If multiple, Please indicate all lesion types (Right)","1, Hippocampal sclerosis/ Mesial temporal atrophy/ hyperintensity | 2, Cavernoma/ vascular lesion | 3, Neoplasm - including DNET & glioma | 4, Focal cortical dysplasia (FCD) | 5, Stroke/ Encephalomalacia (include TBI) | 6, Polymicrogyria | 7, Heterotopias | 8, Cortical Tubers / TSC","Select all that apply",,,,,"[mri_lesion_right] = '0'",,,,,,
+mri_lesion_r_other,phase_i_imaging_neuropsych,,text,"If Other, Please describe lesion type (Right)",,,,,,,"[mri_lesion_right] = 99",,,,,,
+mri_midline_localization,phase_i_imaging_neuropsych,,radio,"MRI Localization (Midline)","1, Frontal | 2, Parietal | 3, Occipital | 4, Sub-cortical | 5, Other",,,,,,"[mri_lateralization] = '4' or [mri_lateralization] = '5'",,,,,," @NONEOFTHEABOVE = '999'"
+mri_mid_local_other,phase_i_imaging_neuropsych,,text,"MRI - Specify Other (Midline)",,,,,,,"[mri_midline_localization] = '5'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+mri_lesion_mid,phase_i_imaging_neuropsych,,dropdown,"Please Indicate the Lesion (Midline)","1, Hamartoma | 2, Cavernoma/ vascular lesion | 3, Neoplasm - including DNET & glioma | 4, Focal cortical dysplasia (FCD) | 5, Stroke/ Encephalomalacia (include TBI) | 6, Polymicrogyria | 7, Heterotopias | 8, Cortical Tubers / TSC | 9, Multiple | 99, Other","Select Only 1",,,,,"[mri_lateralization] = 4 or [mri_lateralization] = 5",,,,,,
+mri_lesion_mid_mult,phase_i_imaging_neuropsych,,checkbox,"If multiple, Please indicate all lesion types (midline)","1, Hamartoma | 2, Cavernoma/ vascular lesion | 3, Neoplasm - including DNET & glioma | 4, Focal cortical dysplasia (FCD) | 5, Stroke/ Encephalomalacia (include TBI) | 6, Polymicrogyria | 7, Heterotopias | 8, Cortical Tubers / TSC","Select all that apply",,,,,"[mri_lesion_mid] = '0'",,,,,,
+mri_lesion_mid_other,phase_i_imaging_neuropsych,,text,"If Other, Please describe lesion type (Midline)",,,,,,,"[mri_lesion_mid] = 99",,,,,,
+pet_yn,phase_i_imaging_neuropsych,FDG-PET,radio,"FDG-PET performed? ","1, Yes | 2, No but ordered | 0, No",,,,,,,,,,,,
+pet_date,phase_i_imaging_neuropsych,,text,"FDG-PET - Date performed/Scheduled Date",,,date_mdy,,,y,"[pet_yn] = '1' or [pet_yn] = '2'",,,,,,
+pet_report,phase_i_imaging_neuropsych,,notes,"Paste FDG-PET Report",,,,,,,"[pet_yn] = '1'",,,,,,
+pet_hypometabolism_yn,phase_i_imaging_neuropsych,,yesno,"FDG-PET Hypometabolism Seen?",,,,,,,"[pet_yn] = '1'",,,,,,
+pet_hypo_lateralization,phase_i_imaging_neuropsych,,radio,"FDG-PET Hypometabolism Lateralization","1, Left | 2, Right | 3, Both",,,,,,"[pet_hypometabolism_yn] = '1'",,,,,,
+pet_hypo_l_local,phase_i_imaging_neuropsych,,radio,"FDG-PET Localization of Hypometabolism (Left)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[pet_hypo_lateralization] = '1' or [pet_hypo_lateralization] = '3'",,,,,,
+pet_hypo_local_l_amp,phase_i_imaging_neuropsych,,radio," FDG-PET Hypometabolism - Anterior, Posterior (left)","1, Anterior | 2, Posterior",,,,,,"[pet_hypo_l_local] = '1'",,,,,," @NONEOFTHEABOVE=""999"""
+pet_hypo_local_l_ml,phase_i_imaging_neuropsych,,radio," FDG-PET Hypometabolism - Medial, Lateral (left)","0, Medial | 1, Lateral | 2, Both",,,,,,"[pet_hypo_l_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+pet_hypo_r_local,phase_i_imaging_neuropsych,,radio,"FDG-PET Localization of Hypometabolism (Right)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[pet_hypo_lateralization] = '2' or [pet_hypo_lateralization] = '3'",,,,,,
+pet_hypo_local_r_amp,phase_i_imaging_neuropsych,,radio," FDG-PET Hypometabolism - Anterior, Posterior (Right)","1, Anterior | 2, Posterior",,,,,,"[pet_hypo_r_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+pet_hypo_local_r_ml,phase_i_imaging_neuropsych,,radio," FDG-PET Hypometabolism - Medial, Lateral (Right)","0, Medial | 1, Lateral | 2, Both",,,,,,"[pet_hypo_r_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+pet_hypo_l_local_other,phase_i_imaging_neuropsych,,text,"FDG-PET - Specify Hypometabolism Other (Left)
+",,,,,,,"[pet_hypo_l_local] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+pet_hypo_r_local_other,phase_i_imaging_neuropsych,,text,"FDG-PET - Specify Hypometabolism Other (Right)
+",,,,,,,"[pet_hypo_r_local] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+rsfmri_yn,phase_i_imaging_neuropsych,rsfMRI,radio,"rsfMRI performed? ","1, Yes | 2, No but ordered | 0, No",,,,,,,,,,,,
+rsfmri_date,phase_i_imaging_neuropsych,,text,"rsMRI - Date performed/Scheduled Date",,,date_mdy,,,y,"[rsfmri_yn] = '1' or [rsfmri_yn] = '2'",,,,,,
+rsfmri_report,phase_i_imaging_neuropsych,,notes,"Paste rsMRI Report",,,,,,,"[rsfmri_yn] = '1'",,,,,,
+rsfmri_hypothesis,phase_i_imaging_neuropsych,,text,"rsfMRI hypothesis",,,,,,,"[rsfmri_yn] = '1'",,,,,," @PLACEHOLDER = ""State hypothesis tested"""
+rsfmri_lateralization,phase_i_imaging_neuropsych,,radio,"rsfMRI ICA Lateralization","1, L | 2, R | 3, L>R | 4, R>L | 5, L=R | 6, Non-lateralizing",,,,,,"[rsfmri_yn] = '1'",,,,,,
+rsfmri_directionality,phase_i_imaging_neuropsych,,text,"rsfMRI Directionality",,,,,,,"[rsfmri_yn] = '1'",,,,,," @PLACEHOLDER = ""State directionality if available"""
+rsfmri_l_localization,phase_i_imaging_neuropsych,,radio,"rsfMRI Localization (Left)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Insula | 9, Other",,,,,,"[rsfmri_lateralization] = '1' or [rsfmri_lateralization] = '3' or [rsfmri_lateralization] = '4' or [rsfmri_lateralization] = '5'",,,,,," @NONEOFTHEABOVE=""999"""
+rsfmri_local_l_amp,phase_i_imaging_neuropsych,,radio," rsfMRI- Anterior, Posterior (left)","1, Anterior | 2, Posterior",,,,,,"[rsfmri_l_localization] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+rsfmri_local_l_ml,phase_i_imaging_neuropsych,,radio,"rsfMRI - Mesial/Lateral (Left)","0, Mesial | 1, Lateral",,,,,,"[rsfmri_l_localization] = '1'",,,,,," @NONEOFTHEABOVE=""3"""
+rsfmri_r_localization,phase_i_imaging_neuropsych,,radio,"rsfMRI Localization (Right)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Insula | 9, Other",,,,,,"[rsfmri_lateralization] = '2' or [rsfmri_lateralization] = '3' or [rsfmri_lateralization] = '4' or [rsfmri_lateralization] = '5'",,,,,,
+rsfmri_local_r_amp,phase_i_imaging_neuropsych,,radio," rsfMRI- Anterior, Posterior (right)","1, Anterior | 2, Posterior",,,,,,"[rsfmri_r_localization] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+rsfmri_local_r_ml,phase_i_imaging_neuropsych,,radio,"rsfMRI - Mesial/Lateral (right)","0, Mesial | 1, Lateral",,,,,,"[rsfmri_r_localization] = '1'",,,,,," @NONEOFTHEABOVE=""3"""
+rsfmri_l_local_other,phase_i_imaging_neuropsych,,text,"rsfMRI - Specify Other (left)",,,,,,,"[rsfmri_l_localization] = '9'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+rsfmri_r_local_other,phase_i_imaging_neuropsych,,text,"rsfMRI - Specify Other (right)",,,,,,,"[rsfmri_r_localization] = '9'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+spect_yn,phase_i_imaging_neuropsych,SPECT,radio,"SPECT performed? ","1, Yes | 2, No but ordered | 0, No",,,,,,,,,,,,
+spect_date,phase_i_imaging_neuropsych,,text,"SPECT - Date performed/Scheduled Date",,,date_mdy,,,y,"[spect_yn] = '1' or [spect_yn] = '2'",,,,,,
+spect_report,phase_i_imaging_neuropsych,,notes,"Paste SPECT Report",,,,,,,"[spect_yn] = '1'",,,,,,
+spect_injection,phase_i_imaging_neuropsych,,radio,"SPECT Injection","0, Interictal | 1, Ictal",,,,,,"[spect_yn] = '1'",,,,,,
+spect_hypermetabolism_yn,phase_i_imaging_neuropsych,,yesno,"SPECT Hypermetabolism Seen?",,,,,,,"[spect_yn] = '1'",,,,,,
+spect_hyper_lateralization,phase_i_imaging_neuropsych,,radio,"SPECT Hypermetabolism Lateralization","1, Left | 2, Right | 3, Both",,,,,,"[spect_hypermetabolism_yn] = '1'",,,,,,
+spect_hyper_l_local,phase_i_imaging_neuropsych,,radio,"SPECT Localization of Hypermetabolism (Left)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[spect_hyper_lateralization] = '1' or [spect_hyper_lateralization] = '3'",,,,,,
+spect_hyper_local_l_amp,phase_i_imaging_neuropsych,,radio,"SPECT Hypermetabolism - Anterior, Posterior (left)","1, Anterior | 2, Posterior",,,,,,"[spect_hyper_l_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hyper_local_l_ml,phase_i_imaging_neuropsych,,radio,"SPECT Hypermetabolism - Medial, Lateral (left)","0, Medial | 1, Lateral",,,,,,"[spect_hyper_l_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hyper_r_local,phase_i_imaging_neuropsych,,radio,"SPECT Localization of Hypermetabolism (Right)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[spect_hyper_lateralization] = '2' or [spect_hyper_lateralization] = '3'",,,,,,
+spect_hyper_local_r_amp,phase_i_imaging_neuropsych,,radio,"SPECT Hypermetabolism - Anterior, Posterior (Right)","1, Anterior | 2, Posterior",,,,,,"[spect_hyper_r_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hyper_local_r_ml,phase_i_imaging_neuropsych,,radio,"SPECT Hypermetabolism - Medial, Lateral (Right)","0, Medial | 1, Lateral",,,,,,"[spect_hyper_r_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hyper_l_local_other,phase_i_imaging_neuropsych,,text,"SPECT - Specify Hypermetabolism Other (Left)
+",,,,,,,"[spect_hyper_l_local] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+spect_hyper_r_local_other,phase_i_imaging_neuropsych,,text,"SPECT - Specify Hypermetabolism Other (Right)",,,,,,,"[spect_hyper_r_local] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+spect_hypometabolism_yn,phase_i_imaging_neuropsych,,yesno,"SPECT Hypometabolism Seen?",,,,,,,"[spect_yn] = '1'",,,,,,
+spect_hypo_lateralization,phase_i_imaging_neuropsych,,radio,"SPECT Hypometabolism Lateralization","1, Left | 2, Right | 3, Both",,,,,,"[spect_hypometabolism_yn] = '1'",,,,,,
+spect_hypo_l_local,phase_i_imaging_neuropsych,,radio,"SPECT Localization of Hypometabolism (Left)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[spect_hypo_lateralization] = '1' or [spect_hypo_lateralization] = '3'",,,,,,
+spect_hypo_local_l_amp,phase_i_imaging_neuropsych,,radio,"SPECT Hypometabolism - Anterior, Posterior (left)","1, Anterior | 2, Posterior",,,,,,"[spect_hypo_l_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hypo_local_l_ml,phase_i_imaging_neuropsych,,radio,"SPECT Hypometabolism - Medial, Lateral (left)","0, Medial | 1, Lateral",,,,,,"[spect_hypo_l_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hypo_r_local,phase_i_imaging_neuropsych,,radio,"SPECT Localization of Hypometabolism (Right)","1, Temporal | 2, Frontal | 3, Parietal | 4, Occipital | 5, Sub-cortical | 6, Other",,,,,,"[spect_hypo_lateralization] = '2' or [spect_hypo_lateralization] = '3'",,,,,,
+spect_hypo_local_r_amp,phase_i_imaging_neuropsych,,radio,"SPECT Hypometabolism - Anterior, Posterior (Right)","1, Anterior | 2, Posterior",,,,,,"[spect_hypo_r_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hypo_local_r_ml,phase_i_imaging_neuropsych,,radio,"SPECT Hypometabolism - Medial, Lateral (Right)","0, Medial | 1, Lateral",,,,,,"[spect_hypo_r_local] = '1'",,,,,," @NONEOFTHEABOVE=""4"""
+spect_hypo_l_local_other,phase_i_imaging_neuropsych,,text,"SPECT - Specify Hypometabolism Other (Left)
+",,,,,,,"[spect_hypo_l_local] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+spect_hypo_r_local_other,phase_i_imaging_neuropsych,,text,"SPECT - Specify Hypometabolism Other (Right)
+",,,,,,,"[spect_hypo_r_local] = '6'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+spect_siscom_yn,phase_i_imaging_neuropsych,,yesno,"Was SPECT Ictal - Interictal Subtraction Analysis (SISCOM) performed?",,,,,,,"[spect_yn] = '1'",,,,,,
+spect_siscom_result,phase_i_imaging_neuropsych,,notes,"What was result of SPECT Ictal - Interictal Subtraction Analysis (SISCOM)?",,"Please paste SISCOM findings",,,,,"[spect_siscom_yn] = '1'",,,,,,
+fmri_yn,phase_i_imaging_neuropsych,fMRI,radio,"fMRI performed? ","1, Yes | 2, No but ordered | 0, No",,,,,,,,,,,,
+fmri_date,phase_i_imaging_neuropsych,,text,"fMRI - Date performed/Scheduled Date",,,date_mdy,,,y,"[fmri_yn] = '1' or [fmri_yn] = '2'",,,,,,
+fmri_report,phase_i_imaging_neuropsych,,notes,"Paste fMRI Report",,,,,,,"[fmri_yn] = '1'",,,,,,
+fmri_other,phase_i_imaging_neuropsych,,radio,"Lateralization/Localization Other than Motor/Language Requested?","1, Yes {fmri_other_type} | 0, No",,,,,,"[fmri_yn] = '1'",,,,,,
+fmri_other_type,phase_i_imaging_neuropsych,,text,"Location of Other Localization_Lateralization Requested",,"If multiple, choose primary",,,,,"[fmri_other] = '1'",,,,,," @PLACEHOLDER = ""Please specify location"""
+fmri_lateral_language,phase_i_imaging_neuropsych,,radio,"fMRI - Language Lateralization","1, Left | 2, Right | 3, Unlateralizable",,,,,,"[fmri_yn] = '1'",,,,fmri_lateralization,,
+fmri_lateral_motor,phase_i_imaging_neuropsych,,radio,"fMRI - Motor Lateralization","1, Left | 2, Right | 3, Unlateralizable",,,,,,"[fmri_yn] = '1'",,,,fmri_lateralization,,
+fmri_lateral_other,phase_i_imaging_neuropsych,,radio,"fMRI - Other Lateralization","1, Left | 2, Right | 3, Unlateralizable",,,,,,"[fmri_other] = '1'",,,,fmri_lateralization,,
+fmri_local_language,phase_i_imaging_neuropsych,,radio,"fMRI - Language Lateralization","0, Broca's/Wernicke's | 1, Other {fmri_language_local_other} | 2, Unlocalizable",,,,,,"[fmri_lateral_language] = '1' or [fmri_lateral_language] = '2' or [fmri_lateral_language] = '3'",,,,,,
+fmri_local_motor,phase_i_imaging_neuropsych,,radio,"fMRI - Motor Lateralization","0, Motor Strip | 1, Other {fmri_motor_local_other} | 2, Unlocalizable",,,,,,"[fmri_lateral_motor] = '1' or [fmri_lateral_motor] = '2' or [fmri_lateral_motor] = '3'",,,,,,
+fmri_local_other,phase_i_imaging_neuropsych,,radio,"fMRI - Other Lateralization","0, Expected Location | 1, Other {fmri_other_local_other} | 2, Unlocalizable",,,,,,"[fmri_lateral_other] = '1' or [fmri_lateral_other] = '2' or [fmri_lateral_other] = '3'",,,,,,
+fmri_language_local_other,phase_i_imaging_neuropsych,,text,"Other Language Localization",,,,,,,"[fmri_local_language] = '1'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+fmri_motor_local_other,phase_i_imaging_neuropsych,,text,"Other Motor Localization",,,,,,,"[fmri_local_motor] = '1'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+fmri_other_local_other,phase_i_imaging_neuropsych,,text,"Other Localization",,,,,,,"[fmri_local_other] = '1'",y,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+wada_yn,phase_i_imaging_neuropsych,WADA,radio,"WADA performed? ","1, Yes | 2, No but ordered | 0, No",,,,,,,,,,,,
+wada_report,phase_i_imaging_neuropsych,,notes,"Paste WADA Neuropsych Interpretation/Recommendation",,,,,,,"[wada_yn] = '1'",,,,,,
+wada_date,phase_i_imaging_neuropsych,,text,"WADA - Date performed/Scheduled Date",,,date_mdy,,,y,"[wada_yn] = '1' or [wada_yn] = '2'",,,,,,
+wada_recall_rh,phase_i_imaging_neuropsych,,text,"WADA - Object Recall (Left Injection, Right hemisphere active) ",,"Out of 8 ",integer,0,8,,"[wada_yn] = '1'",,,,,,
+wada_recall_lh,phase_i_imaging_neuropsych,,text,"WADA - Object Recall (Right Injection, Left hemisphere active) ",,"Out of 8 ",integer,0,8,,"[wada_yn] = '1'",,,,,,
+wada_language,phase_i_imaging_neuropsych,,radio,"WADA - Language Lateralization","1, Left | 2, Right | 3, Unlateralizable",,,,,,"[wada_yn] = '1'",,,,,,
+phase1_meg,phase_i_imaging_neuropsych,MEG,radio,"MEG Performed","0, Yes | 1, No | 3, No but ordered/ pending",,,,,,,,,,,,
+phase1_meg_date,phase_i_imaging_neuropsych,,text,"If Yes, when?",,"When was MEG performed",,,,y,"[phase1_meg] = ""0""",,,,,,
+phase1_meg_results,phase_i_imaging_neuropsych,,notes,"MEG results",,"Please paste MEG results",,,,,"[phase1_meg] = ""0""",,,,,,
+mecc_yn,mecc,"MULTIDISCIPLINARY EPILEPSY CASE CONFERENCE
+'Epilepsy Surgery Conference'
+
+Note: Please ensure a separate entry is made for each MECC presentation for this patient ",yesno,"Multidisciplinary Epilepsy Case Conference:
+Did patient undergo MECC evaluation?",,,,,,,,,,,,,
+mecc_date,mecc,,text,"What date did patient undergo MECC presentation?",,,date_mdy,,,y,"[mecc_yn] = '1'",,,,,,
+timetomecc,mecc,,calc,"Time to MECC presentation","datediff ([medhx_date_sgycand], [mecc_date], 'd', true)","Time from determination as surgical candidate based on Phase 1 admission",,,,,"[mecc_yn] = '1'",,,,,,
+mecc_recs,mecc,,dropdown,"What was (or were) recommendation(s) from MECC?","1, Additional medication trials | 2, Wada | 3, Repeat structural MRI | 4, Repeat Phase 1 | 5, Repeat PET | 6, Repeat fMRI | 7, Repeat Neuropsychology testing | 8, MEG | 9, SPECT | 10, Phase 2 evaluation - sEEG | 11, Phase 2 evaluation - grids and strips w/wo depths | 12, Inconclusive / allow patient to decide | 99, Multiple recommendations | 999, Other | 0, No further surgical evaluation",,,,,,"[mecc_yn] = '1'",,,,,,
+mecc_rec_med,mecc,,text,"If additional medications were recommended, please record them here",,,,,,,"[mecc_recs] = '1'",,,,,,
+mecc_otherrec,mecc,,notes,"If multiple or ""other"" recommendations from MECC, please describe.",,,,,,,"[mecc_recs] = '99' or [mecc_recs] = '999'",,,,,,
+mecc_first_yn,mecc,,yesno,"Was this the first MECC presentation for this patient?",,"Only MECC at UNC",,,,,"[mecc_yn] = '1'",,,,,,
+mecc_date_prior,mecc,,text,"If no, when was prior MECC date for this patient?",,"Confirm that prior MECC data was correctly entered in prior instance of this section",date_mdy,,,y,"[mecc_first_yn] = '0'",,,,,,
+mecc2mecc_time,mecc,,calc,"Time from prior MECC presentation to current MECC presentation","datediff ([mecc_date_prior], [mecc_date], 'd', true)",,,,,,"[mecc_first_yn] = '0'",,,,,,
+phase2_yes_no,phase_ii,,radio,"Phase 2 performed?","1, Yes | 0, No",,,,,,,,,,,,
+phase2_date,phase_ii,,text,"Phase 2 date",,"What date was Phase 2 implanted",date_mdy,,,y,"[phase2_yes_no] = '1'",,,,,,
+phase2_timetosgy,phase_ii,,calc,"Time from surgical candidacy to Phase 2 evaluation","datediff ([medhx_date_sgycand],[phase2_date], 'd', true)","Based on Phase 1 evaluation discharge date",,,,,"[phase2_yes_no] = '1'",,,,,,
+phase2_meccprior,phase_ii,,text,"When was most recent MECC presentation prior to Phase 2 surgery",,"Confirm date with MECC section",date_mdy,,,y,"[phase2_yes_no] = '1'",,,,,,
+phase2_mecc2p2,phase_ii,,calc,"Time from most recent MECC to Phase 2 surgery","datediff ( [phase2_meccprior],[phase2_date], 'd', true)","Confirm reasonable time frame based on MECC section",,,,,"[phase2_yes_no] = '1'",,,,,,
+sz_p2_type,phase_ii,,radio,"Phase II Type","1, Grids/ strips | 2, sEEG | 3, Grids/ strips AND sEEG",,,,,,"[phase2_yes_no] = '1'",,,,,,
+phase2_depth_number,phase_ii,,text,"Number of Depth Electrodes placed",,,,,,,"[sz_p2_type] = '2' or [sz_p2_type] = '3'",,,,,,
+phase2_depth_contacts,phase_ii,,text,"Total number of depth contacts used",,,,,,,"[sz_p2_type] = '2' or [sz_p2_type] = '3'",,,,,,
+phase2_depth_locate,phase_ii,,notes,"Location of depth electrodes?
+(Non-thalamic)",,"Include all targets (eg, right insula, left hippocampus, etc)",,,,,"[sz_p2_type] = '2' or [sz_p2_type] = '3'",,,,,," @PLACEHOLDER"
+phase2_thalamic,phase_ii,,yesno,"Thalamic electrode placed? ",,,,,,,"[sz_p2_type] = '2' or [sz_p2_type] = '3'",,,,,,
+phase2_thal_lateral,phase_ii,,radio,"Thalamic electrode laterality","1, Unilateral left | 2, Unilateral right | 3, Bilateral",,,,,,"[phase2_thalamic] = '1'",,,,,,
+phase2_thalamic_left,phase_ii,,radio,"Location of thalamic electrode (Left)","0, Anterior | 1, Centromedian | 2, Pulvinar | 4, Lateral | 5, Other {sx_p2_thalamic_other1}",,,,,,"[phase2_thal_lateral] = '1' or [phase2_thal_lateral] = '3'",,,,,,
+sx_p2_thalamic_other1,phase_ii,,text,"If Other, please describe",,"Location of ""other"" thalamic electrode",,,,,,,,,,," @PLACEHOLDER"
+phase2_thalamic_right,phase_ii,,radio,"Location of thalamic electrode (Right)","0, Anterior | 1, Centromedian | 2, Pulvinar | 4, Lateral | 5, Other {sx_p2_thalamic_other2}",,,,,,"[phase2_thal_lateral] = '2' or [phase2_thal_lateral] = '3'",,,,,,
+sx_p2_thalamic_other2,phase_ii,,text,"If Other, please describe",,"Location of ""other"" thalamic electrode",,,,,,,,,,," @PLACEHOLDER"
+phase2_grid_contacts,phase_ii,,text,"Total number of grid/ strip contacts used",,,,,,,"[sz_p2_type] = '1' or [sz_p2_type] = '3'",,,,,,
+phase2_grid_locate,phase_ii,,notes,"Location of grid & strip electrodes?
+",,"Include all targets (eg, right subtemporal, left frontal, etc)",,,,,"[sz_p2_type] = '1' or [sz_p2_type] = '3'",,,,,," @PLACEHOLDER"
+sx_soz_localize,phase_ii,,radio,"Was the seizure onset zone(s) localized?","1, Yes | 2, No | 3, Unclear",,,,,,"[phase2_yes_no] = '1'",,,,,,
+sx_soz_number,phase_ii,,radio,"If yes, number of SOZ?","1, One | 2, Two | 3, Three or more","How many SOZ were localized?",,,,,[sx_soz_localize]=1,,,,,,
+sz_soz_eloquent,phase_ii,,radio,"Eloquent Cortex?","1, Yes | 2, No | 999, Unclear","Was one (or more) seizure onset zone in eloquent cortex?",,,,,[sx_soz_localize]=1,,,,,,
+phase2_complications_yn,phase_ii,,radio,"Phase 2 Surgical Complications","1, Yes | 0, No","Where there surgical complications with Phase 2?",,,,,"[phase2_yes_no] = '1'",,,,,,
+phase2_complications,phase_ii,,radio,"Surgical Complication","0, Asymptomatic Hemorrhage | 1, Symptomatic Hemorrhage | 2, Ischemia | 3, Infection | 4, Device related complication (eg lead fracture, lead migration, generator failure) | 5, Other",,,,,,"[phase2_complications_yn] = '1'",,,,,,
+phase2_complications_other,phase_ii,,text,"If other, please describe the Phase 2 surgical complication",,,,,,,"[phase2_complications] = '6'",,,,,,
+phase2_stim_mapping,phase_ii,,yesno,"Bedside Functional Mapping",,"Was bedside cortical stimulation for functional mapping performed?",,,,,"[phase2_yes_no] = '1'",,,,,,
+phase2_stim_sz,phase_ii,,yesno,"Typical seizures?",,"Were typical seizures triggered with bedside mapping?",,,,,"[phase2_stim_mapping] = '1'",,,,,,
+phase2_stim_soz,phase_ii,,text,"If yes, where was SOZ?",,,,,,,"[phase2_stim_sz] = '1'",,,,,,
+phase2_stim_functional,phase_ii,,yesno,"Functional sites?",,"Where functional sites/ eloquent cortex identified on bedside mapping?",,,,,"[phase2_stim_mapping] = '1'",,,,,,
+phase2_stim_fxnalsoz,phase_ii,,yesno,"If yes, were functional sites within SOZ or early spread zones",,,,,,,"[phase2_stim_functional] = '1'",,,,,,
+sx_p2_plan,phase_ii,,radio,"Post-Phase II plan","0, Medical/Conservative Management | 1, Repeat Phase II | 2, VNS | 3, Resection | 4, RNS | 5, DBS | 6, LITT",,,,,,"[phase2_yes_no] = '1'",,,,,,
+sx_performed,phase_iii,,radio,"Was Surgery Performed?","1, Yes | 2, No but scheduled | 3, No",,,,,,,,,,,,
+sx_date,phase_iii,,text,"Date Phase 3 surgery was performed",,,date_mdy,,,y,"[sx_performed] = '1'",,,,,,
+age_phase3,phase_iii,,calc,"Age at Phase III Surgery","rounddown (datediff([phi_dob], [sx_date], 'y', true))","Patient's age when Phase 3 surgery was performed",,,,,"[sx_performed] = '1'",,,,,,
+phase3_duration,phase_iii,,calc,"Time to Phase III surgery","rounddown (datediff([medhx_date_sgycand], [sx_date], 'd', true))","Time from surgical candidacy to Phase III surgery",,,,,"[sx_performed] = '1'",,,,,,
+phase3_mecc_date,phase_iii,,text,"What was date of most recent MECC prior to Phase 3 surgery?",,"Confirm with MECC section",date_mdy,,,y,"[sx_performed] = '1'",,,,,,
+phase3_mecctime_lag,phase_iii,,calc,"Time from last MECC to Phase 3 surgery","datediff ([phase3_mecc_date], [sx_date], 'd', true)",,,,,,"[sx_performed] = '1'",,,,,,
+sx_type,phase_iii,,dropdown,"Phase 3 Surgery Type","1, VNS | 2, Resection/ lesionectomy | 3, RNS | 4, DBS | 5, LITT | 6, Hemispherotomy/ -ectomy | 7, Open corpus callosotomy | 8, Laser corpus callosotomy | 9, Radiofrequency ablation | 10, Multiple subpial transections | 11, High Frequency Ultrasound | 99, Other","Select only 1",,,,,"[sx_performed] = '1'",,,,,,
+sx_rns_thalamic,phase_iii,,yesno,"Thalamic electrode placed? ",,,,,,,"[sx_type] = '3'",,,,,,
+sz_rns_lateral,phase_iii,,radio,"Thalamic RNS location","0, Unilateral left | 1, Unilateral right | 2, Bilateral",,,,,,"[sx_rns_thalamic] = '1'",,,,,,
+sx_rns_thalamus_location,phase_iii,,radio,"Location of thalamic electrode","0, Anterior | 1, Centromedian | 2, Pulvinar | 4, Lateral | 5, Other {sx_rns_thalamic_other}",,,,,,"[sx_rns_thalamic] = '1'",,,,,,
+sx_rns_thalamic_other,phase_iii,,text,"Other - Thalamic Location",,,,,,,"[sx_rns_thalamus_location] = '5'",,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+sx_rns_nonthal_yn,phase_iii,,yesno,"Were non-thalamic electrodes placed?",,,,,,,"[sx_type] = '3'",,,,,,
+sx_rns_depthstrip,phase_iii,,dropdown,"Were non-thalamic depth or strip electrodes used?","1, Depth | 2, Strip | 3, Both","Select only 1",,,,,"[sx_rns_nonthal_yn] = '1'",,,,,,
+sx_rns_nonthal_depth,phase_iii,,dropdown,"How many non-thalamic depth electrodes were used?","1, One | 2, Two | 3, Three | 4, Four","Select only 1",,,,,"[sx_rns_depthstrip] = '1' or [sx_rns_depthstrip] = '3'",,,,,,
+sx_rns_nonthal_strip,phase_iii,,dropdown,"How many non-thalamic strip electrodes were used?","1, One | 2, Two | 3, Three | 4, Four","Select only 1",,,,,"[sx_rns_depthstrip] = 2 or [sx_rns_depthstrip] = 3",,,,,,
+sx_rns_nonthal1,phase_iii,,text,"Location of RNS depth electrode(s) 
+(Non-thalamic)",,"Where were non-thalamic RNS electrodes placed (include all)",,,,,"[sx_rns_depthstrip] = '1' or [sx_rns_depthstrip] = '3'",,,,,," @PLACEHOLDER"
+sx_rns_nonthal2,phase_iii,,text,"Location of RNS strip electrode(s) 
+",,"Where were RNS strip electrodes placed (include all)",,,,,"[sx_rns_depthstrip] = '2' or [sx_rns_depthstrip] = '3'",,,,,," @PLACEHOLDER"
+sx_dbs_location,phase_iii,,radio,"Location of thalamic electrodes","0, Anterior | 1, Centromedian | 2, Pulvinar | 4, Lateral | 5, Other {sx_dbs_thalamic_other}",,,,,,"[sx_type] = '4'",,,,,,
+sx_dbs_thalamic_other,phase_iii,,text,"Other - Thalamic Location",,,,,,,"[sx_dbs_location] = '5'",,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+sx_destruction_loc,phase_iii,,dropdown,"Location of Resection ","1, Left anterior temporal lobectomy | 2, Right anterior temporal lobectomy | 3, Left temporal - neocortical (plus) | 4, Right temporal - neocortical (plus) | 5, Left selective amygdalohippocampectomy - open | 6, Right selective amygdalohippocampectomy - open | 7, Left frontal | 8, Right frontal | 9, Left parietal | 10, Right parietal | 11, Left occipital | 12, Right occipital | 0, Multiple | 99, Other","Where was location of resection?",,,,,"[sx_type] = '2'",,,,,,
+resect_loc_mult,phase_iii,,text,"If multiple, please describe",,"Describe location(s) of resection",,,,,"[sx_destruction_loc] = '0'",,,,,,
+resect_loc_other,phase_iii,,text,"If other, please describe",,"Describe location(s) of resection",,,,,"[sx_destruction_loc] = '99'",,,,,,
+resect_path,phase_iii,,dropdown,"What was pathology of resection?","0, Normal tissue | 1, Hippocampal sclerosis | 2, Cortical dysplasia | 3, Gliosis (eg prior infarct or TBI) | 4, Ganglioglioma | 5, Cavernoma | 6, DNET | 7, Microdysgenesis | 8, Mixed tumor type | 9, Chronic inflammation | 10, Not applicable (path not sent) | 99, Other / multiple","What were main pathology findings?",,,,,"[sx_type] = '2'",,,,,,
+resect_path_other,phase_iii,,text,"If multiple or other pathology type, please describe",,,,,,,"[resect_path] = '99'",,,,,,
+sz_resect_ecog,phase_iii,,yesno,"Was ECoG-guided resection used?",,,,,,,"[sx_type] = 2",,,,,,
+sx_litt_loc,phase_iii,,dropdown,"Location of LITT","1, Left mesial temporal | 2, Right mesial temporal | 3, Multiple | 99, Other","Where was location of LITT",,,,,"[sx_type] = '5'",,,,,,
+litt_loc_other,phase_iii,,text,"If multiple or other, please describe",,"Describe location(s) of LITT",,,,,"[sx_litt_loc] = '3' or [sx_litt_loc] = '99'",,,,,,
+sx_type_hifu,phase_iii,,dropdown,"If High Frequency Ultrasound was used, which location was targeted?","1, Left thalamus | 2, Right thalamus | 3, Bilateral | 999, Unclear/ Unknown",,,,,,"[sx_type] = '11'",,,,,,
+sx_type_other,phase_iii,,text,"If Other, Please describe type & anatomic location of surgery",,,,,,,"[sx_type] = '99'",,,,,,
+sx_complications_yn,phase_iii,,yesno,"Were there Surgical Complications? ",,,,,,,"[sx_performed] = '1'",,,,,,
+sx_complications,phase_iii,,checkbox,"Surgical Complication","0, Asymptomatic Hemorrhage | 1, Symptomatic Hemorrhage | 2, Ischemia | 3, Infection | 4, Device related complication (eg lead fracture, lead migration, generator failure) | 5, Unexpected temporary (<6 month) neurological deficit | 6, Unexpected permanent (> 6 month) neurological deficit | 7, Readmission or reoperation or prolonged length of stay | 8, Death | 999, Other {sx_complications_other}",,,,,,"[sx_complications_yn] = '1'",,,,,,
+sx_complications_other,phase_iii,,text,"Other - Surgical Complications",,,,,,,,,,,,," @PLACEHOLDER = ""PLEASE SPECIFY"""
+scales_phq9,scales,PHQ9,yesno,"PHQ-9 Completed",,,,,,,,,,,,,
+phq9_date,scales,,text,"Please provide date that PHQ9 was performed",,,date_mdy,,,y,"[scales_phq9] = '1'",,,,,,
+scales_phq9_1,scales,,radio,"Little interest or pleasure in doing things?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_2,scales,,radio,"Feeling down, depressed, or hopeless?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_3,scales,,radio,"Trouble falling or staying asleep, or sleeping too much?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_4,scales,,radio,"Feeling tired or having little energy?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_5,scales,,radio,"Poor appetite or overeating?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_6,scales,,radio,"Feeling bad about yourself - or that you are a failure or have let yourself or your family down?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_7,scales,,radio,"Trouble concentrating on things, such as reading the newspaper or watching television?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_8,scales,,radio,"Moving or speaking so slowly that other people could have noticed? Or so fidgety or restless that you have been moving a lot more than usual?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_9,scales,,radio,"Thoughts that you would be better off dead, or thoughts of hurting yourself in some way?","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_phq9] = '1'",,,,phq9,,
+scales_phq9_total,scales,,calc,"PHQ9 Total","sum([scales_phq9_1], [scales_phq9_2], [scales_phq9_2], [scales_phq9_3], [scales_phq9_4], [scales_phq9_5], [scales_phq9_6], [scales_phq9_7], [scales_phq9_8])",,,,,,[scales_phq9]=1,,,,,,
+scales_gad7,scales,GAD-7,yesno,"GAD-7 Completed",,,,,,,,,,,,,
+gad7_date,scales,,text,"What date was GAD7 performed?",,,date_mdy,,,y,"[scales_gad7] = '1'",,,,,,
+scales_gad7_1,scales,"Over the last 2 weeks, how often have you been bothered by the following problems?",radio,"Feeling nervous, anxious, or on edge","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_2,scales,,radio,"Not being able to stop or control worrying","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_3,scales,,radio,"Worrying too much about different things","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_4,scales,,radio,"Trouble relaxing","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_5,scales,,radio,"Being so restless that it is hard to sit still","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_6,scales,,radio,"Becoming easy annoyed or irritable","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_7,scales,,radio,"Feeling afraid as if something awful might happen","0, Not at all | 1, Several days | 2, More than half the days | 3, Nearly every day",,,,,,"[scales_gad7] = '1'",,,,gad7,,
+scales_gad7_total,scales,,calc,"GAD-7 Total","sum([scales_gad7_1], [scales_gad7_2], [scales_gad7_3], [scales_gad7_4], [scales_gad7_5], [scales_gad7_6], [scales_gad7_7])",,,,,,[scales_gad7]=1,,,,,,
+scales_quolie10,scales,QOLIE-10,yesno,"QOLIE-10  Completed",,,,,,,,,,,,,
+qolie_date,scales,,text,"What date was QOLIE-10 completed?",,,date_mdy,,,y,"[scales_quolie10] = '1'",,,,,,
+scales_quolie10_1,scales,,radio,"Did you have a lot of energy?","1, All of the time | 2, Most of the time | 3, A good bit of the time | 4, Some of the time | 5, A little of the time | 6, None of the time",,,,,,"[scales_quolie10] = '1'",,,,quolie10,,
+scales_quolie10_2,scales,,radio,"Have you felt downhearted and low","1, All of the time | 2, Most of the time | 3, A good bit of the time | 4, Some of the time | 5, A little of the time | 6, None of the time",,,,,,"[scales_quolie10] = '1'",,,,quolie10,,
+scales_quolie10_3,scales,,radio,"How much of the time during the past 4 weeks your epilepsy or antiepileptic drugs have caused trouble with...","1, A great deal | 2, A lot | 3, Somewhat | 4, Only a little | 5, Not at all",,,,,,"[scales_quolie10] = '1'",,,,quolie10_2,,
+scales_quolie10_4,scales,,radio,"How much do work limitations bother you?","1, Not at all bothersome | 2,  | 3,  | 4,  | 5, Extremely bothersome",,,,,,"[scales_quolie10] = '1'",,,,quolie10_3,,
+scales_quolie10_5,scales,,radio,"How much do your social limitations bother you?","1, Not at all bothersome | 2,  | 3,  | 4,  | 5, Extremely bothersome",,,,,,"[scales_quolie10] = '1'",,,,quolie10_3,,
+scales_quolie10_6,scales,,radio,"How much do your memory difficulties bother you?","1, Not at all bothersome | 2,  | 3,  | 4,  | 5, Extremely bothersome",,,,,,"[scales_quolie10] = '1'",,,,quolie10_3,,
+scales_quolie10_7,scales,,radio,"How much do physical effects of antiepileptic drugs bother you?","1, Not at all bothersome | 2,  | 3,  | 4,  | 5, Extremely bothersome",,,,,,"[scales_quolie10] = '1'",,,,quolie10_3,,
+scales_quolie10_8,scales,,radio,"How much psychological effects of antiepileptic drugs bother you?","1, Not at all bothersome | 2,  | 3,  | 4,  | 5, Extremely bothersome",,,,,,"[scales_quolie10] = '1'",,,,quolie10_3,,
+scales_quolie10_9,scales,,radio,"How afraid are you of having a seizure during the next 4 weeks?","1, Very afraid | 2, Somewhat afraid | 3, Not very afraid | 4, Not afraid at all",,,,,,"[scales_quolie10] = '1'",,,,quolie10_4,,
+scales_quolie10_10,scales,,radio,"How has your quality of life been the last 4 weeks? ","1, Very good | 2, Pretty good | 3, Good & bad about equal | 4, Pretty bad | 5, Very bad",,,,,,"[scales_quolie10] = '1'",,,,,,
+scales_quolie10_11,scales,,radio,"How much does the state of your epilepsy-related quality of life distress you overall?","1, Not at all | 2, Somewhat | 3, Moderately | 4, A lot | 5, Very much",,,,,,"[scales_quolie10] = '1'",,,,quolie_5,,
+scales_quolie10_rank1,scales,"Rank topic in order of importance",radio,"Energy (tiredness)","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scales_quolie10_rank2,scales,,radio,"Emotions (mood)","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scales_quolie10_rank3,scales,,radio,"Daily activities (work, driving, social)","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scales_quolie10_rank4,scales,,radio,"Mental activity (thinking, concentrating, memory)","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scales_quolie10_rank5,scales,,radio,"Medication effects (physical, mental)","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scales_quolie10_rank6,scales,,radio,"Worry about seizures (impact of seizures)","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scales_quolie10_rank7,scales,,radio,"Overall quality of life","1, 1 (most important) | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 (least important)",,,,,,"[scales_quolie10] = '1'",,,,quolie10_6,y,
+scale_osss,scales,"Oslo Social Support Scale (OSSS-3)",radio,"Was Oslo Social Support Scale (OSSS-3) performed?","1, Yes | 0, No | 999, Unknown",,,,,,,,,,,,
+osss3_date,scales,,text,"What date of OSSS-3 performed?",,,date_mdy,,,y,"[scale_osss] = '1'",,,,,,
+scale_osss_q1,scales,,radio,"How many people are so close to you that you can count on them if you have great personal problems?","1, none | 2, one to two | 3, three to five | 4, more than five","Question 1",,,,,"[scale_osss] = '1'",,,,,,
+scale_osss_q2,scales,,radio,"How much interest and concern do people show in what you do?","1, none | 2, little | 3, uncertain | 4, some | 5, a lot","Question 2",,,,,"[scale_osss] = '1'",,,,,,
+scale_osss_q3,scales,,radio,"How easy is it to get practical help from neighbors or friends if you should need it?","1, very difficult | 2, difficult | 3, possible | 4, easy | 5, very easy","Question 3",,,,,"[scale_osss] = '1'",,,,,,
+scale_osss_score,scales,,calc,"Oslo Social Support Scale (OSSS-3) score","sum([scale_osss_q1],[scale_osss_q2],[scale_osss_q3])","Calculated Value",,,,,"[scale_osss] = '1'",,,,,,
+outcome_yn,outcomes,"Outcomes for patients post-Phase 3 intervention",yesno,"Phase 3 surgery?",,"Did patient have phase 3 surgery?",,,,,,,,,,,
+outcome_sgy_date,outcomes,,text,"Date of Phase 3 surgery",,"Date of Phase 3 surgery associated with these outcomes",date_mdy,,,y,,,,,,,
+outcome_6mo_yn,outcomes,,yesno,"Six month clinic follow-up?",,"Post-phase 3 clinic follow-up - 6 month",,,,,"[outcome_yn] = '1'",,,,,,
+outcome_engel_6,outcomes,,radio,"Engel Outcome Scale at 6 months","1, Class I - Free of disabling seizures {outcome_engel_6sub1} | 2, Class II - Rare disabling seizures (""almost seizure free"") {outcome_engel_6sub2} | 3, Class III - Worthwhile improvement {outcome_engel_6sub3} | 4, Class IV - No worthwhile improvement {outcome_engel_6sub4}",,,,,,"[outcome_6mo_yn] = '1'",,,,,,
+outcome_engel_6sub1,outcomes,,radio,"Engel Class I subtypes","1, IA - Completely seizure-free since surgery | 2, IB - Non disabling simple partial seizures only since surgery | 3, IC - Some disabling seizures after surgery but free of disabling seizures for at least 2 years | 4, ID - Generalized convulsions with anti-seizure drug withdrawal only",,,,,,"[outcome_engel_6] = '1'",,,,,,
+outcome_engel_6sub2,outcomes,,radio,"Engel Class II subtype","1, IIA - Initially free of disabling seizures but has rare seizures now | 2, IIB - Rare disabling seizures since surgery | 3, IIC - More than rare disabling seizures after surgery, but rare seizures for at least 2 years | 4, IID - Nocturnal seizures only",,,,,,"[outcome_engel_6] = '2'",,,,,,
+outcome_engel_6sub3,outcomes,,radio,"Engel Class III subtypes","1, IIIA - Worthwhile seizure reduction | 2, IIIB - Prolonged seizure-free intervals amounting to greater than half the follow-up period, but not less than 2 years",,,,,,"[outcome_engel_6] = '3'",,,,,,
+outcome_engel_6sub4,outcomes,,radio,"Engel Class IV subtypes","1, IVA - Some seizure reduction | 2, IVB - No appreciable change | 3, IVC - Seizures worse after surgery",,,,,,"[outcome_engel_6] = '4'",,,,,,
+outcome_ilae_6,outcomes,,radio,"ILAE Outcome 6 month","1, Completely Seizure free | 2, Auras only | 3, 1 to 3 seizures days per year w or wo auras | 4, 50% or greater reduction in seizure days | 5, less than 50% reduction in seizure days | 6, Increase in seizure days","ILAE Outcome scale at 6 month follow-up",,,,,"[outcome_6mo_yn] = '1'",,,,,,
+outcome_12mo_yn,outcomes,,yesno,"12 month clinic follow-up?",,"Post-phase 3 clinic follow-up - 12 month",,,,,"[outcome_yn] = '1'",,,,,,
+outcome_engel_12,outcomes,,radio,"Engel Outcome Scale at 12 months","1, Class I - Free of disabling seizures {outcome_engel_12sub1} | 2, Class II - Rare disabling seizures (""almost seizure free"") {outcome_engel_12sub2} | 3, Class III - Worthwhile improvement {outcome_engel_12sub3} | 4, Class IV - No worthwhile improvement {outcome_engel_12sub4}",,,,,,"[outcome_12mo_yn] = '1'",,,,,,
+outcome_engel_12sub1,outcomes,,radio,"Engel Class I subtypes","1, IA - Completely seizure-free since surgery | 2, IB - Non disabling simple partial seizures only since surgery | 3, IC - Some disabling seizures after surgery but free of disabling seizures for at least 2 years | 4, ID - Generalized convulsions with anti-seizure drug withdrawal only",,,,,,"[outcome_engel_12] = '1'",,,,,,
+outcome_engel_12sub2,outcomes,,radio,"Engel Class II subtype","1, IIA - Initially free of disabling seizures but has rare seizures now | 2, IIB - Rare disabling seizures since surgery | 3, IIC - More than rare disabling seizures after surgery, but rare seizures for at least 2 years | 4, IID - Nocturnal seizures only",,,,,,"[outcome_engel_12] = '2'",,,,,,
+outcome_engel_12sub3,outcomes,,radio,"Engel Class III subtypes","1, IIIA - Worthwhile seizure reduction | 2, IIIB - Prolonged seizure-free intervals amounting to greater than half the follow-up period, but not less than 2 years",,,,,,"[outcome_engel_12] = '3'",,,,,,
+outcome_engel_12sub4,outcomes,,radio,"Engel Class IV subtypes","1, IVA - Some seizure reduction | 2, IVB - No appreciable change | 3, IVC - Seizures worse after surgery",,,,,,"[outcome_engel_12] = '4'",,,,,,
+outcome_ilae_12,outcomes,,radio,"ILAE Outcome 12 month","1, Completely Seizure free | 2, Auras only | 3, 1 to 3 seizures days per year w or wo auras | 4, 50% or greater reduction in seizure days | 5, less than 50% reduction in seizure days | 6, Increase in seizure days","ILAE Outcome scale at 12 month follow-up",,,,,"[outcome_12mo_yn] = '1'",,,,,,
+outcome_24mo,outcomes,,radio,"Was 24 month follow-up performed?","1, Yes | 2, No | 3, N/A | 999, Unknown",,,,,,"[outcome_yn] = '1'",,,,,,
+outcome_engel_24,outcomes,,radio,"Engel Outcome Scale at 24 months","1, Class I - Free of disabling seizures | 2, Class II - Rare disabling seizures (""almost seizure free"") | 3, Class III - Worthwhile improvement | 4, Class IV - No worthwhile improvement",,,,,,"[outcome_24mo] = '1'",,,,,,
+outcome_ilae_24,outcomes,,radio,"ILAE Outcome 24 months","1, Completely Seizure free | 2, Auras only | 3, 1 to 3 seizures days per year w or wo auras | 4, 50% or greater reduction in seizure days | 5, less than 50% reduction in seizure days | 6, Increase in seizure days","ILAE Outcome scale at 12 month follow-up",,,,,"[outcome_24mo] = '1'",,,,,,
+outcome_12_drive_yn,outcomes,,radio,"Is patient driving?","1, Yes | 0, No | 999, Unknown",,,,,,"[outcome_12mo_yn] = '1'",,,,,,
+outcome_12_drive_sz,outcomes,,radio,"If no, would patient otherwise be able to drive if seizure-free for 6 months?","1, Yes | 0, No | 999, Unknown","Select no if patient has static encephalopathy or other reason for not driving.",,,,,"[outcome_12_drive_yn] = '0'",,,,,,
+outcome_12_drive_unk,outcomes,,text,"If unknown, why?",,"Please describe why it is unknown why patient is not driving.",,,,,"[outcome_12_drive_sz] = '999'",,,,,," @PLACEHOLDER"
+outcome_neuropsych,outcomes,,yesno,"Was post-Phase 3 Neuropsychological Testing completed?",,,,,,,"[outcome_yn] = '1'",,,,,,
+outcome_neuropsych_timing,outcomes,,text,"Time from Phase 3 surgery to Neuropsych testing",,"Time in # of months",number,,,,"[outcome_neuropsych] = '1'",,,,,,
+outcome_neuropsych_result,outcomes,,notes,"Post-Phase 3 Neuropsych Results",,"Paste Main Findings",,,,,"[outcome_neuropsych] = '1'",,,,,,
+outcome_qolie,outcomes,,yesno,"Was post-Phase 3 QOLIE-10 performed?",,,,,,,"[outcome_yn] = '1'",,,,,,
+outcome_qolie_time,outcomes,,text,"Time from Phase 3 to follow-up QOLIE-10 ",,"Time in # of months",number,,,,"[outcome_qolie] = '1'",,,,,,
+outcome_qolie_result,outcomes,,text,"Post-Phase 3 QOLIE-10 score",,,number,,,,"[outcome_qolie] = '1'",,,,,,
+outcome_eeg,outcomes,,yesno,"Was post-Phase 3 routine EEG obtained",,,,,,,"[outcome_yn] = '1'",,,,,,
+outcome_eeg_time,outcomes,,text,"Time to post-Phase 3 routine EEG",,"Time in # of months",number,,,,"[outcome_eeg] = '1'",,,,,,
+outcome_eeg_result,outcomes,,notes,"Post-Phase 3 routine EEG results",,"Paste routine EEG report impression",,,,,"[outcome_eeg] = '1'",,,,,,
+outcome_mri,outcomes,,yesno,"Was post-Phase 3 MRI completed?",,,,,,,"[outcome_yn] = '1'",,,,,,
+outcome_mri_time,outcomes,,text,"Time from Phase 3 surgery to post-Phase 3 MRI",,"Time in # of months",number,,,,"[outcome_mri] = '1'",,,,,,
+outcome_mri_result,outcomes,,notes,"Post-Phase 3 MRI results",,"Paste MRI impression",,,,,"[outcome_mri] = '1'",,,,,,

@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.env.bak*
+secrets/
+.venv/
+.DS_Store
+.claude/
+
+# Pipeline outputs — may contain PHI
+data/raw/
+data/processed/
