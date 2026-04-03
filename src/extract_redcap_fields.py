@@ -477,7 +477,11 @@ GROUP_INSTRUCTIONS: Dict[str, str] = {
         "Code 3 = PNEE/FND only (psychogenic non-epileptic events, functional neurological disorder — no epilepsy). "
         "Code 4 = Physiological non-epileptic events (syncope, parasomnias). "
         "Code 5 = Mixed FND + epilepsy (patient has both PNEE and confirmed epileptic seizures). "
-        "Autoimmune epilepsy is focal (code 1). Dravet syndrome is generalized (code 0)."
+        "Autoimmune epilepsy is focal (code 1). Dravet syndrome is generalized (code 0).\n"
+        "IMPORTANT for medhx_szsyndrome: Return '1' if a specific named epilepsy syndrome is "
+        "documented (e.g. Dravet syndrome, JME, MTLE-HS, LGS, childhood absence epilepsy, CDKL5). "
+        "Return '2' if the patient has epilepsy but no specific syndrome is identified. "
+        "Do not return null."
     ),
     "seizure": (
         "IMPORTANT: emu_sz_type refers to the MOST FREQUENT seizure type at the time of "
@@ -493,7 +497,10 @@ GROUP_INSTRUCTIONS: Dict[str, str] = {
         "6=monthly (once a month, every month), "
         "7=multiple per year (every few months, 3-4x/year), "
         "8=yearly or less frequent (once a year, rare). "
-        "If the patient has FND/PNEE only with no epileptic seizures, return null for this field."
+        "If the patient has FND/PNEE only with no epileptic seizures, return null for this field.\n"
+        "IMPORTANT: Myoclonic jerks — including those in JME and Dravet syndrome — are code 9 "
+        "(Myoclonus or brief jerks), NOT code 1 (primary generalized tonic-clonic). "
+        "Only use code 1 if the note explicitly describes tonic-clonic convulsions as the PRIMARY seizure type."
     ),
     "asms": (
         "IMPORTANT: Count only regularly SCHEDULED anti-seizure medications. "
@@ -723,10 +730,11 @@ def _normalize_checkbox_item(value, choices: Dict[str, str]) -> Optional[str]:
 # Justified: EMU discharge summaries always document these if performed/ordered.
 # Absence of mention = "No".
 FIELD_DEFAULTS: Dict[str, str] = {
-    "pet_yn": "0",      # FDG-PET: not mentioned → No
-    "fmri_yn": "0",     # fMRI: not mentioned → No
-    "wada_yn": "0",     # WADA: not mentioned → No
-    "emu_asm_sfx": "3", # ASM side effects: not mentioned → No side effects
+    "pet_yn": "0",           # FDG-PET: not mentioned → No
+    "fmri_yn": "0",          # fMRI: not mentioned → No
+    "wada_yn": "0",          # WADA: not mentioned → No
+    "emu_asm_sfx": "3",      # ASM side effects: not mentioned → No side effects
+    "medhx_szsyndrome": "2", # Epilepsy syndrome: not identified → No
 }
 
 
