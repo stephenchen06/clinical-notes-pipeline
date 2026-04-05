@@ -4,9 +4,9 @@ import subprocess
 import sys
 
 steps = [
-    ("Extracting REDCap fields", "src/extract_redcap_fields.py"),
-    ("Building REDCap CSV", "src/build_redcap_csv.py"),
-    ("Evaluating accuracy", "src/evaluate_redcap_extraction.py"),
+    ("Extracting fields", "src/extract_fields.py"),
+    ("Building import CSV", "src/build_import_csv.py"),
+    ("Evaluating accuracy", "src/evaluate_extraction.py"),
     ("Generating accuracy chart", "src/visualize_accuracy.py"),
 ]
 

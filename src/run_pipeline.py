@@ -13,10 +13,8 @@ def run_step(script_name: str):
 def main():
     run_step("extract_epic_notes.py")
     run_step("clean_note_text.py")
-    run_step("summarize_with_ollama.py")
-    run_step("build_csv.py")
-    run_step("extract_redcap_fields.py")
-    run_step("build_redcap_csv.py")
+    run_step("extract_fields.py")
+    run_step("build_import_csv.py")
     print("\\nPipeline complete.")
 
 

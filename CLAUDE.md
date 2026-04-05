@@ -31,8 +31,8 @@ python src/extract_epic_notes.py       # Extract from Epic FHIR → data/raw/not
 python src/clean_note_text.py          # Clean HTML/RTF → data/processed/notes_clean.jsonl
 python src/summarize_with_ollama.py    # LLM summarize → data/processed/notes_summaries.jsonl
 python src/build_csv.py                # Export → data/processed/notes_summary.csv
-python src/extract_redcap_fields.py   # REDCap extraction → data/processed/notes_redcap.jsonl
-python src/build_redcap_csv.py         # REDCap import CSV → data/processed/redcap_import.csv
+python src/extract_fields.py   # REDCap extraction → data/processed/notes_redcap.jsonl
+python src/build_import_csv.py         # REDCap import CSV → data/processed/redcap_import.csv
 ```
 
 Evaluate accuracy against synthetic notes (runs all 4 eval steps):
@@ -58,7 +58,7 @@ This is a linear ETL pipeline: Epic FHIR API → raw JSONL → cleaned JSONL →
 
 **`build_csv.py`** — Converts JSONL to CSV. Array fields (`key_diagnoses`, `medications`, `red_flags`) are pipe-separated.
 
-**`extract_redcap_fields.py`** — Second LLM extraction pass targeting the clinician's REDCap data dictionary (`EMUEpilepsySurgeryUtilization_DataDictionary_2026-03-03.csv`). Key design decisions:
+**`extract_fields.py`** — Second LLM extraction pass targeting the clinician's REDCap data dictionary (`EMUEpilepsySurgeryUtilization_DataDictionary_2026-03-03.csv`). Key design decisions:
 - `REDCAP_FIELDS`: hardcoded schema of 30+ variables (medical history, seizure type, ASMs, discharge diagnosis, surgical candidacy, MRI)
 - `GROUP_FIELDS`: fields split into 5 focused groups (medical_history, seizure, asms, discharge, imaging) — each group is a separate Ollama call to keep prompts focused
 - `GROUP_INSTRUCTIONS`: per-group special instructions injected into the prompt to address known model failure patterns (e.g., neurohx disambiguation, frequency anchors, myoclonus vs GTC)
@@ -67,11 +67,11 @@ This is a linear ETL pipeline: Epic FHIR API → raw JSONL → cleaned JSONL →
 - Checkbox fields return arrays of codes; radio/dropdown fields return a single code string or null
 - Outputs `notes_redcap.jsonl`
 
-**`build_redcap_csv.py`** — Converts `notes_redcap.jsonl` to `redcap_import.csv` in REDCap's import format. Checkbox fields are expanded to `fieldname___code` columns with 1/0 values (REDCap's required format). The output CSV can be uploaded directly via REDCap's Data Import Tool.
+**`build_import_csv.py`** — Converts `notes_redcap.jsonl` to `redcap_import.csv` in REDCap's import format. Checkbox fields are expanded to `fieldname___code` columns with 1/0 values (REDCap's required format). The output CSV can be uploaded directly via REDCap's Data Import Tool.
 
-**`evaluate_pipeline.py`** — Helper script that runs all 4 evaluation steps sequentially: `extract_redcap_fields.py` → `build_redcap_csv.py` → `evaluate_redcap_extraction.py` → `visualize_accuracy.py`.
+**`evaluate_pipeline.py`** — Helper script that runs all 4 evaluation steps sequentially: `extract_fields.py` → `build_import_csv.py` → `evaluate_extraction.py` → `visualize_accuracy.py`.
 
-**`evaluate_redcap_extraction.py`** — Compares `data/processed/redcap_import.csv` against `data/synthetic/redcap_expected.csv`. Outputs per-field and per-patient accuracy with detailed mismatch diffs.
+**`evaluate_extraction.py`** — Compares `data/processed/redcap_import.csv` against `data/synthetic/redcap_expected.csv`. Outputs per-field and per-patient accuracy with detailed mismatch diffs.
 
 **`visualize_accuracy.py`** — Generates `data/reports/redcap_accuracy.png` — a horizontal bar chart of field-level accuracy grouped by clinical domain.
 
@@ -117,7 +117,7 @@ The `secrets/` directory and `.env` are git-ignored. Private keys go in `secrets
 
 Commit the accuracy chart whenever evaluation is re-run so GitHub reflects the latest results:
 ```bash
-git add data/reports/redcap_accuracy.png src/extract_redcap_fields.py
+git add data/reports/redcap_accuracy.png src/extract_fields.py
 git commit -m "describe what changed and accuracy delta"
 git push
 ```

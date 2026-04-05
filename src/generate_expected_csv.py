@@ -5,7 +5,7 @@ Generate the ground truth REDCap CSV for the 8 synthetic notes.
 Values here were manually determined by the note author and represent
 the correct REDCap-coded answers for each synthetic patient.
 Run this once to produce data/synthetic/redcap_expected.csv, which is
-used by evaluate_redcap_extraction.py to measure model accuracy.
+used by evaluate_extraction.py to measure model accuracy.
 
 Usage:
     python src/generate_expected_csv.py
@@ -17,8 +17,8 @@ from pathlib import Path
 
 # Add src to path so we can import the shared schema
 sys.path.insert(0, str(Path(__file__).parent))
-from extract_redcap_fields import REDCAP_FIELDS
-from build_redcap_csv import build_fieldnames, flatten_record
+from extract_fields import REDCAP_FIELDS
+from build_import_csv import build_fieldnames, flatten_record
 
 # ---------------------------------------------------------------------------
 # Ground truth: correct REDCap values for each synthetic note.

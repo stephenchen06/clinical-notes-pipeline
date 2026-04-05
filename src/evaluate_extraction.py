@@ -6,7 +6,7 @@ Compares data/processed/redcap_import.csv (model output)
 against data/synthetic/redcap_expected.csv (ground truth).
 
 Usage:
-    python src/evaluate_redcap_extraction.py
+    python src/evaluate_extraction.py
 
 Output:
     - Per-field accuracy across all patients
@@ -74,7 +74,7 @@ def main():
 
     if not actual_path.exists():
         print(f"Model output not found: {actual_path}")
-        print("Run the pipeline first: python src/extract_redcap_fields.py && python src/build_redcap_csv.py")
+        print("Run the pipeline first: python src/extract_fields.py && python src/build_import_csv.py")
         return
 
     expected = load_csv(expected_path)

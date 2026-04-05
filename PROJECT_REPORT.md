@@ -31,10 +31,10 @@ clean_note_text.py          → Cleaned plain text JSONL
 summarize_with_ollama.py    → LLM summary JSONL (chief complaint, diagnoses, meds)
      │
      ▼
-extract_redcap_fields.py    → 30+ REDCap fields extracted per note
+extract_fields.py    → 30+ REDCap fields extracted per note
      │
      ▼
-build_redcap_csv.py         → redcap_import.csv (ready for REDCap Data Import Tool)
+build_import_csv.py         → redcap_import.csv (ready for REDCap Data Import Tool)
 ```
 
 **Key components:**

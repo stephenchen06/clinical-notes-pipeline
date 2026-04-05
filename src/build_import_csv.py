@@ -15,7 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from extract_redcap_fields import REDCAP_FIELDS, CHECKBOX_FIELDS
+from extract_fields import REDCAP_FIELDS, CHECKBOX_FIELDS
 
 
 def build_fieldnames(redcap_fields_schema: dict) -> list[str]:
