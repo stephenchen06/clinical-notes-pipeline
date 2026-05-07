@@ -1,0 +1,244 @@
+---
+title: "LLM Clinical Notes Project Update — First Clinician Ground Truth Validation"
+date: "April 25, 2026"
+output:
+  pdf_document:
+    latex_engine: xelatex
+  html_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+**To:** Dr. Belfin
+
+**From:** Stephen Chen, Undergraduate Research Assistant
+
+**GitHub:**
+[stephenchen06/clinical-notes-pipeline](https://github.com/stephenchen06/clinical-notes-pipeline)
+
+------------------------------------------------------------------------
+
+## Summary
+
+Since the April 9 briefing, Dr. Waters provided the actual REDCap
+entries for one real de-identified patient (Amy Hoffmann, MRN
+100073810036 — `real-doc-001` in our pipeline). This is the **first time
+we have evaluated the pipeline against clinician-validated ground
+truth** rather than AI-generated expected values.
+
+**Result: 86.4% accuracy on fields where the clinician entered a value**
+(108/125 scored fields). Of the 17 errors, 7 are fixable prompt issues,
+7 are structurally impossible to extract from an admission note alone,
+and 3 require clinical discussion before they can be resolved.
+
+------------------------------------------------------------------------
+
+## What Changed Since Last Briefing
+
+The previous 97.6% accuracy figure was measured against an AI-generated
+answer key. This update replaces that with real clinician data for one
+note and surfaces a clearer picture of where the pipeline actually
+stands.
+
+| Evaluation | Ground Truth | Notes Scored | Accuracy |
+|------------------|------------------|------------------|------------------|
+| Previous (Apr 9) | AI-generated (ChatGPT/Claude Opus) | 9 synthetic + real | 97.6% |
+| **Current (Apr 25)** | **Dr. Waters' REDCap entries** | **1 real note** | **86.4%** |
+
+The drop from 97.6% to 86.4% does not mean the pipeline got worse. It
+means we are now measuring against a harder, more meaningful target.
+
+------------------------------------------------------------------------
+
+## How the Evaluation Was Done
+
+1.  Dr. Waters shared REDCap screenshots for `real-doc-001` (Amy
+    Hoffmann) covering all five forms: Demographics, Medical History,
+    EMU Admission (two instances), Phase 1 EEG Findings, and Phase 1
+    Imaging/Neuropsych.
+
+2.  We conducted a **field-by-field comparison** of every REDCap entry
+    against the actual admission note text to understand what the note
+    contains vs. what the clinician entered from other sources.
+
+3.  We updated the ground truth CSV with clinician-validated values,
+    replacing the prior AI-generated expected values for this note.
+
+4.  We modified the evaluator to treat blank ground truth fields as
+    **N/A** (not scored), so only fields where the clinician explicitly
+    entered a value count toward accuracy. This makes the score reflect
+    real extraction performance rather than "both are blank" matches.
+
+------------------------------------------------------------------------
+
+## Accuracy Results
+
+**Overall: 86.4% (108/125 scored fields)**
+
+-   130 total fields in pipeline schema
+-   5 fields skipped (blank in ground truth = N/A)
+-   125 fields scored; 108 correct; 17 wrong
+
+### Fields correct (100%)
+
+hand dominance, etiology (focal/unknown), epilepsy syndrome, prior
+surgery, driving status, ASMs on admission (count + type), discharge
+diagnosis, epilepsy type, medical refractoriness, MRI performed, MRI
+result (abnormal)
+
+### Fields with errors (17 total)
+
+See detailed breakdown in the next section.
+
+------------------------------------------------------------------------
+
+## Error Analysis
+
+### Category 1 — Fixable Prompt Errors (7 fields)
+
+These are genuine extraction errors where the pipeline reads the note
+incorrectly. All are correctable with targeted prompt instructions.
+
+| Field | Expected | Pipeline Output | What Note Says | Fix |
+|---------------|---------------|---------------|---------------|---------------|
+| `medhx_neurohx` | Headaches | **TBI** | "No significant head trauma" — explicitly denied | Add instruction: TBI requires explicit trauma history |
+| `medhx_psych` | Depression + PTSD | Depression + **Anxiety** + PTSD | "Anxious mood" in Active Problems; "Denies anxiety" in ROS | Add instruction: "Anxious mood" ≠ Anxiety disorder |
+| `emu_sz_type` | Code 6 (Retained awareness NOS) | Code 3 (Focal non-motor retained) | "Full awareness and responsiveness," sensory onset | Clinician prefers NOS when semiology is non-specific |
+| `emu_sz_type1_freq` | Code 9 (Random clusters) | Code 7 (Multiple/year) | "Every 2 months with cluster of up to 5 events/day for 3–4 days" | Add frequency anchor: cluster pattern → code 9 |
+| `emu_asm_sfx` | Code 99 (Unclear) | Code 3 (No side effects) | Side effects not documented in note | Add instruction: absent documentation → unclear, not no |
+| `emu_sxcandidate` | Code 1 (Yes, discussed) | Code 4 (Not currently/future) | "Epilepsy surgery evaluation" as goal | Surgical evaluation language → code 1 |
+| `medhx_etio` | Code 1 (Focal/Multifocal) | Code 2 (Both focal + generalized) | Two seizure types: focal sensory (ongoing) + one GTC (2019, pre-ASM) | See clinical discussion below |
+
+### Category 2 — Structurally Impossible to Extract (7 fields)
+
+These fields are not errors — the information was not in the admission
+note because the relevant studies or decisions happened weeks to months
+later. No pipeline reading only this admission note could get these
+right.
+
+| Field | Expected (Clinician) | Reason Not in Note |
+|------------------------|------------------------|------------------------|
+| `pet_yn` | Yes | PET done November 2022 (4 months post-admission) |
+| `fmri_yn` | Yes | fMRI done October 2022 (3 months post-admission) |
+| `wada_yn` | Yes | WADA done February 2024 (19 months post-admission) |
+| `mri_lateralization` | Bilateral | December 2022 MRI report — not in admission note |
+| `mri_l_localization` | Frontal | Same MRI report |
+| `mri_r_localization` | Frontal | Same MRI report |
+| `emu_asmdc_number` | Three | Discharge ASMs — determined on discharge day |
+
+**Key implication:** To fully populate a REDCap record, the pipeline
+needs multiple documents per patient — the admission note, discharge
+summary, radiology reports (MRI, PET, fMRI), and any WADA or neuropsych
+reports. The current architecture processes one note at a time.
+
+### Category 3 — Requires Clinical Discussion (3 fields)
+
+These are not straightforward extraction errors. They require a judgment
+call that we cannot make without clinician input.
+
+| Field | Expected | Pipeline | Question for Dr. Waters |
+|------------------|------------------|------------------|------------------|
+| `medhx_etio` | Code 1 (Focal) | Code 2 (Both) | Patient had one lifetime GTC in July 2019, before ASMs, plus ongoing focal sensory seizures. Should one pre-treatment GTC change the classification from Focal to Both? |
+| `medhx_si` | No | Blank | Suicidal ideation is not mentioned anywhere in the note. The pipeline left it blank. Should absence of mention default to "No"? Or should the pipeline leave it blank if not documented? |
+| `medhx_sgy_cand_yn` | Yes | Blank | The note says "aim to capture 3–5 typical seizures for epilepsy surgery evaluation." The pipeline didn't extract a Yes because the note doesn't explicitly say "surgical candidate." Is this language sufficient to code Yes? |
+
+------------------------------------------------------------------------
+
+## Full Field-by-Field Comparison Highlight
+
+We compared every REDCap field Dr. Waters entered against what the
+admission note actually contains. Key finding: **roughly half the REDCap
+fields for this patient cannot come from the admission note at all** —
+they require information from other encounter types (referral records,
+clinic visits, radiology, discharge).
+
+Fields that CAN come from an admission note (\~25 of 130): hand
+dominance, seizure onset age, suspected seizure type, etiology, epilepsy
+syndrome, prior surgery, neurological/psychiatric comorbidities, SI,
+driving, care partner, ASMs on admission (type + count), seizure type
+and frequency, discharge diagnosis, epilepsy type, refractoriness,
+surgical candidacy, MRI performed/result
+
+Fields that CANNOT come from an admission note: all advanced imaging
+(PET, fMRI, rsfMRI, WADA), detailed MRI localization, EEG findings
+(interictal and ictal), discharge ASMs, follow-up plan, demographics
+(race, insurance, employment, education)
+
+------------------------------------------------------------------------
+
+## Items for Discussion with Dr. Waters
+
+The following questions need clinical input before the pipeline can be
+finalized:
+
+1.  **One-time pre-treatment GTC:** Should a single GTC that occurred
+    only once before ASMs were started change the seizure type
+    classification from Focal to Both? (Affects `medhx_etio`.)
+
+2.  **Suicidal ideation default:** If the note doesn't mention SI at
+    all, should the pipeline default to "No" or leave blank? The
+    evaluator currently penalizes blank when the expected value is No.
+
+3.  **Surgical candidacy language:** Is "epilepsy surgery evaluation" in
+    the admission plan sufficient to code surgical candidate = Yes? Or
+    does that require explicit documentation?
+
+4.  **Neurological comorbidities from outside the note:** The note never
+    mentions headaches, but Dr. Waters coded Headaches as a neurological
+    comorbidity (presumably from other records). Should the pipeline
+    skip this field when it's absent from the note, or is there a way to
+    flag it for manual review?
+
+5.  **Seizure type coding preference:** Dr. Waters coded the primary
+    seizure type as "Events with retained awareness — NOS" (code 6)
+    rather than the more specific "Focal non-motor with retained
+    awareness, sensory" (code 3). Is NOS preferred when semiology is
+    partially described, or should the pipeline try to be more specific?
+
+6.  **Multi-document pipeline:** Should we extend the system to accept
+    multiple documents per patient (admission note + discharge summary +
+    radiology reports) so the pipeline can populate the full REDCap
+    record? Or is the goal to extract only what's in a single note type?
+
+------------------------------------------------------------------------
+
+## Next Steps
+
+### Immediate (can do now, no input needed)
+
+1.  Fix the 7 prompt errors identified above — expected accuracy
+    improvement to \~92% on fields the admission note can supply.
+2.  Re-run evaluation on all 9 notes once prompts are fixed.
+
+### Requires input from Dr. Waters / Dr. Belfin
+
+3.  **Resolve the 3 borderline cases** (medhx_etio, medhx_si,
+    medhx_sgy_cand_yn) — need guidance on coding conventions.
+4.  **Confirm ground truth for remaining 8 notes** — the 8 synthetic
+    discharge notes still have AI-generated expected values. Even
+    spot-checking 2–3 would help validate the evaluation framework.
+5.  **Decide on multi-document architecture** — if the goal is to
+    populate a full REDCap record, we need discharge summaries and
+    radiology reports, not just admission notes.
+6.  **Get additional real de-identified notes** — more real notes with
+    clinician-verified REDCap entries would give a statistically
+    meaningful accuracy estimate.
+
+### Longer term
+
+7.  Pull and benchmark `ministral-3:14b` locally (same model as API, 9.1
+    GB) once ground truth and prompt fixes are stable.
+8.  Expand test set to 20–30 notes, prioritizing edge cases for weak
+    fields.
+9.  Validate on Epic notes once access is established.
+
+------------------------------------------------------------------------
+
+## Appendix: Accuracy Summary Chart
+
+![Field-Level Extraction Accuracy — real-doc-001 vs clinician ground
+truth](data/reports/redcap_accuracy.png)
+
+*1 note evaluated (real-doc-001, EMU admission note). 125 scored fields
+(5 N/A). 86.4% accuracy against Dr. Waters' REDCap entries.*

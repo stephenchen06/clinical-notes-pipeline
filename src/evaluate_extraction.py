@@ -41,16 +41,26 @@ def get_redcap_columns(row: dict) -> list[str]:
 
 
 def compare_rows(expected: dict, actual: dict, columns: list[str]) -> dict:
-    """Return per-column match results for one patient."""
+    """Return per-column match results for one patient.
+
+    match=True  → correct
+    match=False → wrong
+    match=None  → N/A (ground truth blank; field not applicable or not
+                  entered by clinician — excluded from accuracy scoring)
+    """
     results = {}
     for col in columns:
         exp_val = expected.get(col, "").strip()
         act_val = actual.get(col, "").strip()
-        results[col] = {
-            "match": exp_val == act_val,
-            "expected": exp_val,
-            "actual": act_val,
-        }
+        if exp_val == "":
+            # No ground truth entered — skip this field entirely
+            results[col] = {"match": None, "expected": exp_val, "actual": act_val}
+        else:
+            results[col] = {
+                "match": exp_val == act_val,
+                "expected": exp_val,
+                "actual": act_val,
+            }
     return results
 
 
@@ -64,12 +74,14 @@ def group_column_to_field(col: str) -> str:
 def main():
     load_dotenv()
 
-    expected_path = Path("./data/synthetic/redcap_expected.csv")
+    expected_path = Path(os.getenv("GROUND_TRUTH_CSV", "./data/synthetic/redcap_expected.csv"))
     actual_path = Path(os.getenv("REDCAP_CSV", "./data/processed/redcap_import.csv"))
 
     if not expected_path.exists():
         print(f"Ground truth not found: {expected_path}")
-        print("Run: python src/generate_expected_csv.py")
+        print("Set GROUND_TRUTH_CSV in .env or default paths:")
+        print("  Synthetic: ./data/synthetic/redcap_expected.csv")
+        print("  Real:      ./data/real/redcap_expected.csv")
         return
 
     if not actual_path.exists():
@@ -109,10 +121,14 @@ def main():
 
     for doc_id in common_ids:
         results = compare_rows(expected[doc_id], actual[doc_id], columns)
-        correct = sum(1 for r in results.values() if r["match"])
-        per_patient[doc_id] = (correct, len(columns))
+        # Only count fields where ground truth is non-blank (match is not None)
+        scored = {col: r for col, r in results.items() if r["match"] is not None}
+        correct = sum(1 for r in scored.values() if r["match"])
+        per_patient[doc_id] = (correct, len(scored))
 
         for col, r in results.items():
+            if r["match"] is None:
+                continue  # skip N/A fields
             base_field = group_column_to_field(col)
             per_field[base_field].append(r["match"])
             if not r["match"]:
@@ -132,8 +148,11 @@ def main():
     print("=" * 65)
     print("  REDCap Extraction Accuracy Report")
     print("=" * 65)
+    total_na = sum(len(columns) - t for _, t in per_patient.values())
     print(f"  Patients evaluated : {len(common_ids)}")
-    print(f"  Columns per patient: {len(columns)}")
+    print(f"  Total columns      : {len(columns)} per patient")
+    print(f"  N/A (blank GT)     : {total_na} skipped")
+    print(f"  Scored fields      : {total_fields}")
     print(f"  Overall accuracy   : {total_correct}/{total_fields} ({overall_pct:.1f}%)")
     print()
 

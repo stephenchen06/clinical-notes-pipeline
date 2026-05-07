@@ -12,6 +12,7 @@ Outputs notes_redcap.jsonl where each record contains:
 import ast
 import json
 import os
+import time
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -583,17 +584,39 @@ Clinical note:
 def call_ollama(base_url: str, model: str, prompt: str) -> str:
     resp = requests.post(
         f"{base_url.rstrip('/')}/api/generate",
-        json={"model": model, "prompt": prompt, "stream": False},
+        json={"model": model, "prompt": prompt, "stream": False, "options": {"temperature": 0}},
         timeout=240,
     )
     resp.raise_for_status()
     return resp.json().get("response", "")
 
 
-def extract_group(note: Dict, group: str, base_url: str, model: str) -> Dict:
-    """Run one focused Ollama call for a single field group. Returns {field: raw_value}."""
+def call_mistral(api_key: str, model: str, prompt: str, retries: int = 3) -> str:
+    for attempt in range(retries):
+        resp = requests.post(
+            "https://api.mistral.ai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": 0},
+            timeout=240,
+        )
+        if resp.status_code == 429:
+            wait = 10 * (attempt + 1)
+            print(f"    [rate limit] waiting {wait}s before retry...")
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"]
+    resp.raise_for_status()  # raise after exhausting retries
+
+
+def extract_group(note: Dict, group: str, base_url: str, model: str,
+                  backend: str = "ollama", mistral_api_key: str = "") -> Dict:
+    """Run one focused LLM call for a single field group. Returns {field: raw_value}."""
     prompt = build_prompt(note, group)
-    raw_response = call_ollama(base_url, model, prompt)
+    if backend == "mistral":
+        raw_response = call_mistral(mistral_api_key, model, prompt)
+    else:
+        raw_response = call_ollama(base_url, model, prompt)
     parsed = parse_response(raw_response)
 
     field_names = GROUP_FIELDS[group]
@@ -791,8 +814,17 @@ def normalize_fields(raw_fields: Dict) -> Dict:
 def main():
     load_dotenv()
 
+    backend = os.getenv("INFERENCE_BACKEND", "ollama").lower()
     base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    model = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
+    mistral_api_key = os.getenv("MISTRAL_API_KEY", "")
+
+    if backend == "mistral":
+        model = os.getenv("MISTRAL_MODEL", "ministral-14b-latest")
+        if not mistral_api_key:
+            raise ValueError("MISTRAL_API_KEY is not set in .env")
+    else:
+        model = os.getenv("OLLAMA_MODEL", "mistral-nemo")
+
     clean_path = Path(os.getenv("CLEAN_NOTES_JSONL", "./data/processed/notes_clean.jsonl"))
     raw_path = Path(os.getenv("RAW_NOTES_JSONL", "./data/raw/notes_raw.jsonl"))
     out_path = Path(os.getenv("REDCAP_JSONL", "./data/processed/notes_redcap.jsonl"))
@@ -802,16 +834,19 @@ def main():
         raise FileNotFoundError(f"No input file found at {clean_path} or {raw_path}")
     in_path = clean_path if clean_path.exists() else raw_path
 
+    print(f"Backend: {backend} | Model: {model}")
+
     count = 0
     with in_path.open("r", encoding="utf-8") as fin, out_path.open("w", encoding="utf-8") as fout:
         for line in fin:
             note = json.loads(line)
             print(f"  Processing: {note.get('title', 'untitled')}")
 
-            # Run one focused Ollama call per field group and merge results
+            # Run one focused LLM call per field group and merge results
             merged_raw: Dict = {}
             for group in GROUP_FIELDS:
-                group_result = extract_group(note, group, base_url, model)
+                group_result = extract_group(note, group, base_url, model,
+                                             backend=backend, mistral_api_key=mistral_api_key)
                 merged_raw.update(group_result)
                 print(f"    [{group}] done")
 
